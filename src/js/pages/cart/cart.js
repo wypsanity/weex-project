@@ -1,0 +1,34 @@
+export const SERVICES = [{
+    name: '会员福利',
+    icon: 'bmlocal://assets/images/plant.png',
+}, {
+    name: '优惠券',
+    icon: 'bmlocal://assets/images/tickets.png',
+}, {
+    name: '我的收藏',
+    icon: 'bmlocal://assets/images/like.png',
+}, {
+    name: '我的足迹',
+    icon: 'bmlocal://assets/images/footprint.png',
+}, {
+    name: '我的账户',
+    icon: 'bmlocal://assets/images/money.png',
+}, {
+    name: '我的地址',
+    icon: 'bmlocal://assets/images/placeholder.png',
+}, {
+    name: '我的团队',
+    icon: 'bmlocal://assets/images/telemarketer.png',
+}, {
+    name: '意见反馈',
+    icon: 'bmlocal://assets/images/feedback.png',
+}, {
+    name: '旗下门店',
+    icon: 'bmlocal://assets/images/smartphone.png',
+}, {
+    name: '订单提示',
+    icon: 'bmlocal://assets/images/orderPrompt_t.png',
+}, {
+    name: '到账提示',
+    icon: 'bmlocal://assets/images/payTips.png',
+}]
