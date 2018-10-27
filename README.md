@@ -1,6 +1,3 @@
-## eros 主项目地址
-- [https://github.com/bmfe/eros](https://github.com/bmfe/eros)
-
 
 ## 介绍
 
