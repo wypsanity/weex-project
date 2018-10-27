@@ -93,17 +93,7 @@ export default {
             this.classes = CLASSES
         },
         getSubclasses() {
-            // this.$fetch({
-            //     method: 'GET',
-            //     name: 'yanxuan_class_getSubclasses',
-            //     data: {}
-            // }).then(resData => {
-            //     this.subclasses = resData.data
-            // }, error => {
-
-            // })
-
-            this.subclasses = SUBCLASSES
+            
         },
         onscroll(e) {
             let formatOffset = Math.abs(e.contentOffset.y)

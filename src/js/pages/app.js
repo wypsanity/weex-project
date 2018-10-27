@@ -12,7 +12,7 @@ export default {
             city:'' 
           }, 
           userid:'',
-          jsessionid: "",
+          jsessionid: "325cfe63-7b7b-46f6-a279-f10cb748844e",
           nickName: "",
           headimgurl: "",
           sex: "", //性别 0：未知、1：男、2：女

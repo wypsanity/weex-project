@@ -25,10 +25,12 @@
       </div>
     </div>
     <!-- 第三个页面内容-->
-    <div class="item-container" :style="contentStyle">
-
-    <text>消息中心</text>
-
+    <div>
+      <div class="status-bar" :style="{'height': statusBarHeight}"></div>
+      <head :title="allTitle"></head>
+      <div class="item-container-index" :style="contentStyle">      
+        <cart></cart>
+      </div>
     </div>
 
     <!-- 第四个页面内容-->
@@ -75,6 +77,33 @@
 .scroller{
     width: 750px;
 }
+
+
+.slogan {
+    width: 750px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.i-slg {
+    font-size: 26px;
+    text-align: center;
+    color: #b4282d;
+}
+.head-box{
+height: 66px;
+padding-top: 16px;
+display: flex;
+flex:1;
+flex-direction: row;
+flex-wrap: nowrap;
+justify-content: center;
+align-items: center;
+}
+.head-image{
+  width:10px;
+  height:10px
+}
 </style>
 <script>
   import { WxcTabBar, Utils,WxcMinibar} from 'weex-ui';
@@ -84,8 +113,9 @@
   import home from './home/home.vue';
   import catelog from './catelog/catelog.vue';
   import my from './my/my.vue';
+  import cart from './cart/cart.vue';
   export default {
-    components: { WxcTabBar,WxcMinibar,head,home,catelog,my },
+    components: { WxcTabBar,WxcMinibar,head,home,catelog,my,cart },
     data: () => ({
       tabTitles: Config.tabTitles,
       tabStyles: Config.tabStyles,
