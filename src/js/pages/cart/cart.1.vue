@@ -52,7 +52,7 @@
                 <div style="height:100px;flex:1.8;" class="cart-bottom-layout-two pub-layout">
                     <text class="hidden-text" style="width: 200px;" v-if="!isEditCart">{{'￥'+cartTotal.checkedGoodsAmount}}</text>
                 </div>
-                <div style="height:100px;flex:0.7;" class="cart-bottom-layout pub-layout" @click="editCart()">
+                <div style="height:100px;flex:0.7;" class="cart-bottom-layout pub-layout">
                     <text>{{!isEditCart?'编辑':'完成'}}</text>
                 </div>
                 <div style="height:100px;flex:1;">
@@ -86,13 +86,6 @@ export default {
             jsessionid:'',
             isEditCart:false,
             checkedAllStatus:true,
-            cartTotal: {
-                goodsCount: 0,
-                goodsAmount: 0.00,
-                checkedGoodsCount: 0,
-                checkedGoodsAmount: 0.00
-                },
-            editCartList:[]
 
         }
     },
@@ -151,8 +144,6 @@ export default {
                     }
                 })
             })
-            this.checkedAllStatus=that.isCheckedAll()
-            console.log(this.checkedAllStatus);
         },
         checkedItem(index){
             var that = this;
@@ -218,6 +209,7 @@ export default {
                  this.cartTotal=res.data.cartTotal;
                 }
                 this.checkedAllStatus= that.isCheckedAll();
+                console.log(res);
             }, error => {
                 // 错误回调
                 //console.log(error)
@@ -233,38 +225,6 @@ export default {
             }else{
                 //编辑状态
             }
-        },
-        editCart: function () {
-            var that = this;
-            if (this.isEditCart) {
-            this.getCartList();
-                this.isEditCart=!this.isEditCart
-                console.log("123");
-                console.log(this.checkedAllStatus);
-            } else {
-            //编辑状态
-            
-            let tmpCartList = this.cartGoods.map(function (v) {
-                v.checked = '0';
-                return v;
-            });
-                this.editCartList= this.cartGoods,
-                this.cartGoods= tmpCartList,
-                this.isEditCart= !this.isEditCart,
-                this.checkedAllStatus= that.isCheckedAll(),
-                this.cartTotal.checkedGoodsCount= that.getCheckedGoodsCount()
-                console.log(this.checkedAllStatus);
-            }
-
-        },
-        getCheckedGoodsCount: function(){
-            let checkedGoodsCount = 0;
-            this.cartGoods.forEach(function (v) {
-            if (v.checked =='1') {
-                checkedGoodsCount += v.numbers;
-            }
-            });
-            return checkedGoodsCount;
         },
         checkoutOrder(){
 
