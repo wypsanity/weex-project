@@ -68,7 +68,7 @@
         console.log(e);
       },
       jump (url) {
-
+          console.log(url);
       },
       getIndexData (){
         let that = this;
