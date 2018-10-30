@@ -32,6 +32,8 @@ const dom = weex.requireModule('dom');
 const animation = weex.requireModule('animation')
 var modal = weex.requireModule('bmModal')
 import {Utils} from 'weex-ui';
+import apis from '../../config/url.apis';
+import app from '../app';
 
 export default {
     components: {
@@ -41,9 +43,7 @@ export default {
         const tabPageHeight = Utils.env.getPageHeight();
         const { tabStyles } = this;
         this.contentStyle = { height: (tabPageHeight - tabStyles.height - 70) + 'px' };
-        this.init()
-        var result = this.$storage.getSync('config');
-        this.authId = result.globalData.authId;
+        this.init();
     },
     mounted() {
         this.$nextTick(() => {
@@ -125,9 +125,9 @@ export default {
             var that = this;
             this.$fetch({
                 method: 'GET',    
-                url: 'https://www.qingqinkj.com/api/mall/mall/pub/category/index',
+                url: apis.CatalogList,
                 data: {
-                    locationId: '',authId: that.authId
+                    locationId: '',authId: app.getAuthId()
                 }
             }).then(res => {
                 // 成功回调

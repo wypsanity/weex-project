@@ -5,7 +5,6 @@
 </template>
 <script>
 	import main from './main.vue'
-	import Config from './app.js'
 	export default {
 		components:{
 			main
@@ -25,7 +24,6 @@
 		},
 		created () {
 			this.androidFinishApp()
-			this.$storage.setSync('config', Config)
 		},
 		methods: {
 			androidFinishApp () {

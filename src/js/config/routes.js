@@ -12,5 +12,9 @@ export default {
     'pages.main' : {
         title: 'main',
         url: '/pages/main.js'
+    },
+    'pages.cart.checkout' : {
+        url: '/pages/cart/checkout/checkout.js',
     }
+    
 }

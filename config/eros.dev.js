@@ -13,7 +13,8 @@ module.exports = {
         'js/pages/cart/cart.vue',
         'js/pages/catelog/catelog.vue',
         'js/pages/home/home.vue',
-        'js/pages/my/my.vue'
+        'js/pages/my/my.vue',
+        'js/pages/cart/checkout/checkout.vue',
     ],
     'alias': {
         'Components': 'js/components',

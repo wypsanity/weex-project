@@ -26,8 +26,8 @@
   import PopularProduct from './components/PopularProduct.vue';
   import ShopSelection from './components/ShopSelection.vue';
   import GoodGrid from './components/GoodGrid.vue';
-  var navigator = weex.requireModule('navigator');
-  var modal = weex.requireModule('modal');
+  import api from '../../config/url.apis';
+  import app from '../app';
   export default {
   data () {
         return {
@@ -60,22 +60,65 @@
      "shop-selection":ShopSelection,
      "good-grid":GoodGrid
     },
+    created() {
+        
+    },
     methods: {
       wxcButtonClicked (e) {
-        console.log(e)
-        this.$router.push({path: '/Hello'});
+        console.log(e);
       },
       jump (url) {
-      this.$router.push({path: '/Hello'});
-        /*
-          navigator.push({
-            url: '/Hello',
-            animated: "true"
-          }, event => {
-            modal.toast({ message: 'callback: ' + event })
+
+      },
+      getIndexData (){
+        let that = this;
+        this.$fetch({
+                method: 'GET',    
+                url: api.IndexUrl+'?authId='+app.getAuthId(),
+                data: {
+                }
+            }).then(res => {
+                // 成功回调
+                if (res.tips.isOk) {
+                    this.newGoods= res.newGoodsList;
+                    this.hotGoods= res.hotGoodsList;
+                    this.topics= res.topicList;
+                    this.brand= res.brandList;
+                    this.floorGoods= res.categoryList;
+                    this.banner=res.banner;
+                    this.channel= that.dealUrl(res.channel);
+                    this.categoryTree= res.categoryTree;
+                    let indexData={
+                    newGoods: res.newGoodsList,
+                    hotGoods: res.hotGoodsList,
+                    topics: res.topicList,
+                    brand: res.brandList,
+                    floorGoods: res.categoryList,
+                    banner: res.banner,
+                    channel: that.dealUrl(res.channel),
+                    categoryTree: res.categoryTree
+                  }
+                    app.indexData=indexData;
+                    
+                }
+            }, error =>{
+                this.$notice.alert({
+                    title: "查询失败",
+                    message: '消息',
+                    okTitle: '确认',
+                    callback() {
+                    }
+                })
+            })
+      },
+        dealUrl: function (channel){
+          channel.forEach(item => {
+            if (item.isToUrl == "0") {
+              item.url = "../category/category?id=" + item.categoryId
+            }
           })
-          */
-        }
+          return channel;
+        },
     }
   }
 </script>
