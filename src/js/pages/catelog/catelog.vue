@@ -32,7 +32,7 @@ const dom = weex.requireModule('dom');
 const animation = weex.requireModule('animation')
 var modal = weex.requireModule('bmModal')
 import {Utils} from 'weex-ui';
-import apis from '../../config/url.apis';
+import api from '../../config/url.apis';
 import app from '../app';
 
 export default {
@@ -44,6 +44,7 @@ export default {
         const { tabStyles } = this;
         this.contentStyle = { height: (tabPageHeight - tabStyles.height - 70) + 'px' };
         this.init();
+        this.$event.on('getCatalog', params => {this.getCatalog ()})
     },
     mounted() {
         this.$nextTick(() => {
@@ -51,7 +52,7 @@ export default {
              //    this.scrollHeight = data.size.height
              //})
         })
-      this.getCatalog();
+      //this.getCatalog();
     },
     data() {
         return {
@@ -66,20 +67,20 @@ export default {
         }
     },
     methods: {
-        jumpWeb(_url) {
+        jumpWeb(_url){
             this.$router.toWebView({
                 url: _url,
                 title: '',
                 navShow: true,
             })
         },
-        init() {
+        init(){
 
             // console.log('deviceHeight:' + this.$getConfig().env.deviceHeight);
             this.getClasses()
             this.getSubclasses()
         },
-        getClasses() {
+        getClasses(){
             // this.$fetch({
             //     method: 'GET',
             //     name: 'yanxuan_class_getClasses',
@@ -92,10 +93,10 @@ export default {
 
             this.classes = CLASSES
         },
-        getSubclasses() {
+        getSubclasses(){
             
         },
-        onscroll(e) {
+        onscroll(e){
             let formatOffset = Math.abs(e.contentOffset.y)
             // console.log(formatOffset);
             // console.log(this.scrollHeight);
@@ -105,7 +106,7 @@ export default {
             // }
             // this.actIndex = parseInt(formatOffset / this.scrollHeight)
         },
-        chooseClass(index) {
+        chooseClass(index){
             this.actIndex = index;
             animation.transition(this.$refs.jcLine, {
                 styles: {
@@ -117,36 +118,38 @@ export default {
             }, function() {});
             this.currentCategory = this.navList[index];
         },
-        appear(index) {
-            console.log(index);
-            this.chooseClass(index)
-        },
-        getCatalog(){
+        getCatalog (){
             var that = this;
-            this.$fetch({
-                method: 'GET',    
-                url: apis.CatalogList,
-                data: {
-                    locationId: '',authId: app.getAuthId()
+            if(!!app.indexData.categoryTree.children){
+                if (app.indexData.categoryTree.children.length>0){
+                    this.navList=app.indexData.categoryTree.children,
+                    this.currentCategory=app.indexData.categoryTree.children[0]
                 }
-            }).then(res => {
-                // 成功回调
-                if (res.tips.isOk) {
-                 this.navList = res.data.children;
-                 this.currentCategory = res.data.children[0];
-                }
-            }, error => {
-                // 错误回调
-                //console.log(error)
-                this.$notice.alert({
-                    title: "查询失败",
-                    message: '消息',
-                    okTitle: '确认',
-                    callback() {
-                        // 点击确认按钮的回调
+            }else{
+                this.$fetch({
+                    method: 'GET',    
+                    url: api.CatalogList,
+                    data: {
+                        locationId: '',authId: app.getAuthId()
                     }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                        this.navList = res.data.children;
+                        this.currentCategory = res.data.children[0];
+                        app.navList = res.data.children;
+                    }
+                }, error => {
+                    this.$notice.alert({
+                        title: "查询失败",
+                        message: '消息',
+                        okTitle: '确认',
+                        callback() {
+                        }
+                    })
                 })
-            })
+            }
+            
+
         }
     }
 }

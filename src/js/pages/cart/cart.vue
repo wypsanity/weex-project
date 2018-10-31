@@ -14,7 +14,7 @@
               <text class="i-slg">满88元免邮费</text>
           </div>
         </div>
-        <div v-if="cartGoods.length<=0" class="noshop-layout" :style="contentStyle">
+        <div v-if="cartGoods.length<=0" class="noshop-layout" :style="contentStyle" @click="gototest">
             <image class="noshop-image" resize="stretch" src="bmlocal://assets/images/goodcart.png"></image>
             <text style="text-align:center;color:#999">去添加点什么吧</text>
         </div>
@@ -52,7 +52,7 @@
                     <text class="hidden-text">全选({{checkedAllStatus?cartTotal.checkedGoodsCount:0}})</text>
                 </div>
                 <div style="height:100px;flex:1.8;" class="cart-bottom-layout-two pub-layout">
-                    <text class="hidden-text" style="width: 200px;" v-if="!isEditCart">{{'￥'+cartTotal.checkedGoodsAmount}}</text>
+                    <text class="hidden-text" style="width: 200px;">{{'￥'+cartTotal.checkedGoodsAmount}}</text>
                 </div>
                 <div style="height:100px;flex:0.7;" class="cart-bottom-layout pub-layout" @click="editCart()">
                     <text>{{!isEditCart?'编辑':'完成'}}</text>
@@ -80,13 +80,12 @@ import apis from '../../config/url.apis';
 export default {
     components: { WxcIcon,WxcButton,stepper },
     mounted() {
-        this.getCartList();
+        //this.getCartList();
     },
     data() {
         return {
             cartGoods:[],
-            cartTotal:{},
-            tabStyles: Config.tabStyles,
+            tabStyles:Config.tabStyles,
             jsessionid:'',
             isEditCart:false,
             checkedAllStatus:true,
@@ -114,13 +113,6 @@ export default {
         }
     },
     methods: {
-        jumpWeb(_url) {
-            this.$router.toWebView({
-                url: _url,
-                title: '',
-                navShow: true,
-            })
-        },
         getCartList(){
             var that = this;
             this.$fetch({
@@ -131,67 +123,43 @@ export default {
                 }
             }).then(res =>{
                 if (res.tips.isOk) {
+                 res.data.cartList.forEach(i=>i.totalPrice=(i.numbers*i.retailPrice).toFixed(2));
                  this.cartGoods=res.data.cartList;
                  this.cartTotal=res.data.cartTotal;
-                 this.checkedAllStatus=this.isCheckedAll()
+                 this.checkedAllStatus=this.isCheckedAll();
                 }
             },error => {
-                this.$notice.alert({
-                    title: "查询失败",
-                    message: '消息',
-                    okTitle: '确认',
-                    callback(){
-                    }
-                })
+                this.checkedAllStatus=this.isCheckedAll();
             })
-            
         },
         checkedItem(itemIndex){
             var that = this;
-            if(!this.isEditCart){
-                this.$fetch({
-                method: 'POST',    
-                url: apis.CartChecked+'?jsessionid='+that.jsessionid,
-                data: {
-                    id: that.cartGoods[itemIndex].id,
-                    isChecked: that.cartGoods[itemIndex].checked=="1" ? "0" : "1"
+            let cartItemId = that.cartGoods[itemIndex].id
+            let isChecked = that.cartGoods[itemIndex].checked == "1" ? "0" : "1" 
+        
+            that.cartGoods.forEach(item => {
+                if (item.id == cartItemId) {
+                item.checked = isChecked
                 }
-            }).then(res => {
-                // 成功回调
-                if (res.tips.isOk) {
-                 this.cartGoods=res.data.cartList;
-                 this.cartTotal=res.data.cartTotal;
-                }
-                this.checkedAllStatus = this.isCheckedAll();
-            }, error =>{
-                this.$notice.alert({
-                    title: "失败",
-                    message: '消息',
-                    okTitle: '确认',
-                    callback() {
-                        // 点击确认按钮的回调
-                    }
-                })
-                this.checkedAllStatus = this.isCheckedAll();
             })
-            }else{
-                let tmpCartData = this.cartGoods.map(function (element, index, array) {
-                if (index == itemIndex){
-                var flag='0';
-                if (element.checked=='0'){
-                    flag='1';
-                }
-                element.checked = flag;
-                }
-                return element;
-            });
-                this.cartGoods=tmpCartData,
-                this.checkedAllStatus=this.isCheckedAll(),
-                this.cartTotal.checkedGoodsCount=this.getCheckedGoodsCount()
-            }    
+                this.cartGoods=that.cartGoods;
+                this.checkedAllStatus=that.isCheckedAll();
+                this.cartTotal=that.getCheckedGoodsCountAndAmount();   
         },
-        isCheckedAll(){
-                
+        getCheckedGoodsCountAndAmount: function(){ 
+            let cartTotal={
+            checkedGoodsCount: 0,
+            checkedGoodsAmount: 0.00
+            }
+            this.cartGoods.forEach(function (v) {
+                if (v.checked =='1') {
+                    cartTotal.checkedGoodsCount += v.numbers;
+                    cartTotal.checkedGoodsAmount += v.numbers * v.retailPrice;
+                }
+            })
+            return cartTotal;
+        },
+        isCheckedAll() {
             var flag = true;
             this.cartGoods.forEach(i=>{
                 if(i.checked=='0'){
@@ -203,84 +171,51 @@ export default {
         },
         checkedAll(){
             let that = this;
-            if(!this.isEditCart){
-                var productIds = this.cartGoods.map(function (v) {
-                    return v.productId;
-                });
-                this.$fetch({
-                method: 'POST',    
-                url: apis.CartChecked+'?jsessionid='+that.jsessionid,
-                data: {
-                    productIds: productIds.join(','),
-                    isChecked: that.isCheckedAll() ? 0 : 1
-                }
-            }).then(res => {
-                // 成功回调
-                if (res.tips.isOk) {
-                 this.cartGoods=res.data.cartList;
-                 this.cartTotal=res.data.cartTotal;
-                }
-                this.checkedAllStatus= that.isCheckedAll();
-            }, error => {
-                // 错误回调
-               
-                this.$notice.alert({
-                    title: "失败",
-                    message: '消息',
-                    okTitle: '确认',
-                    callback() {
-                        // 点击确认按钮的回调
-                    }
-                })
-                this.checkedAllStatus= that.isCheckedAll();
-            })
-            }else{
-                //编辑状态
-                let checkedAllStatus = this.isCheckedAll();
-                let tmpCartData = this.cartGoods.map(function (v) {
-                    var flag=0;
-                    if (!checkedAllStatus){
-                    flag=1;
-                    }
-                    v.checked = flag;
-                    return v;
-                });
-
-                    this.cartGoods=tmpCartData,
-                    this.checkedAllStatus=this.isCheckedAll(),
-                    this.cartTotal.checkedGoodsCount=this.getCheckedGoodsCount()
+            let checkedAllStatus = that.isCheckedAll();
+            if (this.isEditCart==false) {
+            that.cartGoods.forEach(function (v) {
+                v.checked = !checkedAllStatus
+            });
+            this.cartGoods=that.cartGoods;
+            this.checkedAllStatus=!checkedAllStatus;
+            this.cartTotal=that.getCheckedGoodsCountAndAmount();
+            } else {
+            //编辑状态 
+                that.cartGoods.map(function (v) {
+                    v.checked = !checkedAllStatus
+                }); 
+                this.cartGoods=that.cartGoods;
+                this.checkedAllStatus=!checkedAllStatus;
+                this.cartTotal=that.getCheckedGoodsCountAndAmount();
             }
         },
         editCart: function () {
             var that = this;
-            if (this.isEditCart) {
-                this.getCartList();
-                this.isEditCart=!this.isEditCart
+            if(this.isEditCart) {
+                this.isEditCart=!this.isEditCart;
             }else {
-                let tmpCartList = this.cartGoods.map(function (v) {
-                    v.checked = '0';
-                    return v;
-                });
-                this.editCartList= this.cartGoods;
-                this.cartGoods= tmpCartList;
-                this.isEditCart= !this.isEditCart;
-                this.checkedAllStatus= that.isCheckedAll();
-                this.cartTotal.checkedGoodsCount= that.getCheckedGoodsCount();
-                }
-        },
-        getCheckedGoodsCount: function(){
-            let checkedGoodsCount = 0;
-            this.cartGoods.forEach(function (v) {
-            if (v.checked =='1') {
-                checkedGoodsCount += v.numbers;
+                this.$fetch({
+                method: 'POST',    
+                url: apis.CartBatchUpdate+'?jsessionid='+that.jsessionid,
+                data: that.cartGoods
+                }).then(res =>{
+                    if (res.tips.isOk) {
+                        this.isEditCart=false
+                    }
+                },error => {
+                    this.$notice.alert({
+                        title: "查询失败",
+                        message: '消息',
+                        okTitle: '确认',
+                        callback(){
+                        }
+                    })
+                })
             }
-            });
-            return checkedGoodsCount;
         },
-        checkoutOrder(){
+        checkoutOrder() {
             //获取已选择的商品
-            let that = this;
-
+            let that =this;
             var checkedGoods = this.cartGoods.filter(function (element, index, array) {
             if (element.checked =='1') {
                 return true;
@@ -292,10 +227,20 @@ export default {
             if (checkedGoods.length <= 0) {
             return false;
             }
-            this.$router.open({
-                name: 'pages.cart.checkout',
-                navShow : false,
-            })
+            this.$fetch({
+                method: 'POST',    
+                url: apis.CartBatchChecked+'?jsessionid='+that.jsessionid,
+                data: cartItems
+                }).then(res =>{
+                    if (res.tips.isOk) {
+                        this.$router.open({
+                            name: 'pages.cart.checkout',
+                            navShow : false,
+                        })
+                    }
+                },error => {
+                })
+            
 
         },
         deleteCart(){
@@ -309,7 +254,9 @@ export default {
                 return false;
             }
             });
-
+            let notCheckedItems = this.cartGoods.filter(item=>{
+                return item.checked=='0'
+            });
             if (ids.length <= 0) {
                 this.$notice.toast({
                     message: '请点击按钮选择删除'
@@ -326,90 +273,92 @@ export default {
                 method: 'POST',    
                 url: apis.CartDelete+'?jsessionid='+that.jsessionid,
                 data: ids
-            }).then(res => {
+            }).then(res =>{
                 // 成功回调
                 if (res.tips.isOk) {
-                    console.log("456456");
-                    console.log(res);
-                    if(!!res.data){
-                     let cartList = res.data.cartList.map(v => {
-                        v.checked = '0';
-                        return v;
-                        });
-                        this.cartGoods=cartList;
-                        this.cartTotal=res.data.cartTotal;
-                        
-                        this.$notice.toast({
-                            message: '删除成功'
-                        })
-                    }else{
-                        this.cartGoods=[];
-                        this.cartTotal={};
-                        this.$notice.toast({
-                            message: '删除成功'
-                        })
-                    }
+                     this.cartGoods=notCheckedItems;
+                     this.checkedAllStatus=that.isCheckedAll();
+                     this.cartTotal=that.getCheckedGoodsCountAndAmount();
                 }
-                this.checkedAllStatus= that.isCheckedAll();
-            }, error => {
-                // 错误回调
-                this.$notice.alert({
-                    title: "失败",
-                    message: '消息',
-                    okTitle: '确认',
-                    callback() {
-                        // 点击确认按钮的回调
-                    }
-                })
-                this.checkedAllStatus= that.isCheckedAll();
+            }, error =>{
             })
         },
         cutNumber(index){
             let cartItem = this.cartGoods[index];
             let numbers = (cartItem.numbers - 1 > 1) ? cartItem.numbers - 1 : 1;
-            cartItem.numbers = numbers;
-            this.cartGoods= this.cartGoods;
+            //cartItem.numbers = numbers;
             this.updateCart(cartItem.productId, cartItem.goodsId, numbers, cartItem.id);
+        },
+        numbersChange: function (itemIndex) {
+            // let cartItem = this.cartGoods[itemIndex];
+            // let numbers=0;
+            // if (event.detail.value==''){
+            // numbers=0
+            // }else{
+            // numbers = parseInt(event.detail.value)
+            // } 
+            // this.updateCart(cartItem.productId, cartItem.goodsId, numbers, cartItem.id);
         },
         addNumber(index){
             let cartItem = this.cartGoods[index];
             let numbers = cartItem.numbers + 1;
-            cartItem.numbers = numbers;
-            this.cartGoods=this.cartGoods;
+            //cartItem.numbers = numbers;
             this.updateCart(cartItem.productId, cartItem.goodsId, numbers, cartItem.id);
         },
         updateCart: function (productId, goodsId, numbers, id) {
             let that = this;
-
-            this.$fetch({
-                method: 'POST',    
-                url: apis.CartUpdate+'?jsessionid='+that.jsessionid,
-                data: {
-                    productId: productId,
-                    goodsId: goodsId,
-                    numbers: numbers,
-                    id: id
+            let hasGoodsNumber=false;
+            that.cartGoods.forEach(item => {
+            if (item.id == id) { 
+                if (item.orginGoodsNumber){  
+                hasGoodsNumber=true
+                if (((item.goodsNumber >= (item.orginGoodsNumber - numbers)) && numbers <= item.orginGoodsNumber)||numbers<=item.numbers){
+                    item.goodsNumber = item.orginGoodsNumber - numbers
+                    item.numbers = numbers
+                    item.totalPrice = (item.numbers * item.retailPrice).toFixed(2)
                 }
-            }).then(res => {
-                // 成功回调
-                if (res.tips.isOk) {
-                    console.log("成功了");
-                    console.log(res);
-                }
-                this.checkedAllStatus= that.isCheckedAll();
-            }, error => {
-                // 错误回调
-               
-                this.$notice.alert({
-                    title: "失败",
-                    message: '消息',
-                    okTitle: '确认',
-                    callback() {
-                        // 点击确认按钮的回调
-                    }
-                })
+                } 
+            }
             })
+            if (hasGoodsNumber==true){
+                    this.cartGoods=that.cartGoods;
+                    this.checkedAllStatus=that.isCheckedAll();
+                    this.cartTotal=that.getCheckedGoodsCountAndAmount();
+            }else{
+                this.$fetch({
+                    method: 'GET',    
+                    url: apis.CheckSku+'?jsessionid='+that.jsessionid,
+                    data: {
+                        productId: productId
+                    }
+                }).then(res => {
+                    // 成功回调
+                    if (res.tips.isOk) {
+                        that.cartGoods.forEach(item => {
+                            if (item.productId == productId) {
+                            item.goodsNumber = res.data
+                            item.orginGoodsNumber = res.data
+                            if (((item.goodsNumber >= (item.orginGoodsNumber - numbers)) && numbers <= item.orginGoodsNumber) || numbers <= item.numbers) {
+                                item.goodsNumber = item.orginGoodsNumber - numbers
+                                item.numbers = numbers
+                                item.totalPrice = (item.numbers * item.retailPrice).toFixed(2)
+                            }
+                            }
+                        })
+                        this.cartGoods=that.cartGoods;
+                        this.checkedAllStatus=that.isCheckedAll();
+                        this.cartTotal=that.getCheckedGoodsCountAndAmount();
+                    }
+                }, error => {
+                })
+            }
         },
+        gototest(){
+            this.$router.open({
+                            name: 'pages.cart.checkout',
+                            navShow : false,
+                        })
+        }
 
     }
 }

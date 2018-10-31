@@ -1,4 +1,5 @@
 export default {
+    navList:{},
     globalData: {
         authId:'r89bb6397',//德多多小程序   
         authType: 'noauth', //reject 拒绝授权 /accept 同意 / noauth 未授权
@@ -35,6 +36,19 @@ export default {
         cantuanInfo:{},//参团信息
         addressInfo:{},//地址信息
         commentGoodsList:[]//某订单中待评价的商品列表
+      },
+      indexData:{//首页加载后的数据 
+        newGoodss: [],//res.newGoodsList,
+        hotGoodss: [],//res.hotGoodsList,
+        topics: [],//res.topicList,
+        brands: [],//res.brandList,
+        categoryGoodss: [],//res.categoryList,
+        banners: [],//res.banner,
+        channels: [],//res.channel,
+        categoryTree:{},//分类树
+      },
+      getUserInfo: function () {
+        return this.globalData.userInfo;
       },
       getAuthId : function(){
         return this.globalData.authId;

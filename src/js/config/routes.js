@@ -14,6 +14,7 @@ export default {
         url: '/pages/main.js'
     },
     'pages.cart.checkout' : {
+        title:'test',
         url: '/pages/cart/checkout/checkout.js',
     }
     
