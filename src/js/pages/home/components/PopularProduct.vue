@@ -52,7 +52,7 @@
         border-top-style:solid;
         border-top-color:#d9d9d9;
         width:750px;
-        heigth:300px;
+        height:300px;
         display:flex;
         flex-direction: row;
         flex-wrap:wrap;
