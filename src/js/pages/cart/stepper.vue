@@ -8,7 +8,7 @@
     </div>
     <input class="stepper-input"
            type="number"
-           :value="valueString"
+           :value="value.numbers"
            @input="onInput"
            @blur="onBlur"
            :style="disableStyle"
@@ -62,7 +62,7 @@
       },
       max: {
         type: [String, Number],
-        default: 100
+        default: 10
       },
       step: {
         type: [String, Number],
@@ -72,9 +72,8 @@
         type: Boolean,
         default: false
       },
-      defaultValue: {
-        type: [String, Number],
-        default: 1
+      value: {
+        type: Object//numbers
       },
       readOnly: {
         type: Boolean,
@@ -89,22 +88,21 @@
           }
         }
       },
-      valueString () {
-        return this.value.toString();
-      }
+      // valueString () {
+      //   return this.value.toString();
+      // }
     },
     data: () => ({
-      value: 1,
       isLess: false,
       isOver: false
     }),
     watch: {
-      defaultValue (newNum) {
-        this.value = newNum;
-      }
+      // defaultValue (newNum) {
+      //   this.value = newNum;
+      // }
     },
     created () {
-      this.value = parseInt(this.defaultValue, 10);
+      //this.value = parseInt(this.defaultValue, 10);
       if (this.disabled) {
         this.isLess = true;
         this.isOver = true;
@@ -115,39 +113,43 @@
         if (this.disabled) {
           return;
         }
-        const isMinOver = this.value <= this.min;
-        const nowNum = this.value - parseInt(this.step, 10);
+        const isMinOver = this.value.numbers <= this.min;
+        const nowNum = this.value.numbers - parseInt(this.step, 10);
         if (isMinOver) {
-          this.$emit('wxcStepperValueIsMinOver', { value: this.value });
+          this.$emit('wxcStepperValueIsMinOver', this.value);
         } else {
-          this.value = nowNum;
+          this.value.numbers = nowNum;
           this.resetDisabledStyle();
         }
         // 由于此处已经减step
-        if (nowNum <= this.min) {
-          this.value = parseInt(this.min, 10);
+        if (nowNum < this.min) {
+          this.value.numbers = parseInt(this.min, 10);
           this.isLess = true;
         }
-        this.$emit('wxcStepperValueCutNumber', { value: this.value });
+        if(!this.isLess){
+        this.$emit('wxcStepperValueCutNumber', this.value);
+        }
       },
       plusClicked () {
         if (this.disabled) {
           return;
         }
-        const isMaxOver = this.value >= this.max;
-        const nowNum = this.value + parseInt(this.step, 10);
+        const isMaxOver = this.value.numbers >= this.max;
+        const nowNum = this.value.numbers + parseInt(this.step, 10);
         if (isMaxOver) {
-          this.$emit('wxcStepperValueIsMaxOver', { value: this.value });
+          this.$emit('wxcStepperValueIsMaxOver', this.value);
         } else {
-          this.value = nowNum;
+          this.value.numbers = nowNum;
           this.resetDisabledStyle();
         }
         // 由于此处已经加step
-        if (nowNum >= this.max) {
-          this.value = parseInt(this.max, 10);
+        if (nowNum > this.max) {
+          this.value.numbers = parseInt(this.max, 10);
           this.isOver = true;
         }
-        this.$emit('wxcStepperValueAddNumber', { value: this.value });
+        if(!this.isOver){
+        this.$emit('wxcStepperValueAddNumber', this.value);
+        }
       },
       onInput (e) {
         this.correctInputValue(e.value);
@@ -157,12 +159,16 @@
       },
       correctInputValue (v) {
         if (/^[1-9]\d{0,}$/.test(v) && parseInt(v, 10) >= this.min && parseInt(v, 10) <= this.max) {
-          this.value = parseInt(v, 10);
+          this.value.numbers = parseInt(v, 10);
+          this.$emit('wxcStepperValueChanged', this.value);
+        }else{
+          this.$notice.toast({
+                message: '请重新输入'
+            })
+            return;
         }
-        this.$emit('wxcStepperValueChanged', { value: this.value });
       },
-
-      resetDisabledStyle () {
+      resetDisabledStyle (){
         this.isLess = false;
         this.isOver = false;
       }

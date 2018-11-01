@@ -1,22 +1,24 @@
 <template>
     <div >
-    <stepper step="1" :default-value="numbers" min="1" :read-only="true"
-                            @wxcStepperValueCutNumber="cutNumber()" @wxcStepperValueAddNumber="addNumber()"></stepper>    
-                            
+    <stepper step="1" :value="item" min="1"
+                            @wxcStepperValueCutNumber="cutNumber" @wxcStepperValueChanged="wxcButtonClicked" @wxcStepperValueAddNumber="addNumber"></stepper>    
+    <wxc-button text="确定"
+              @wxcButtonClicked="wxcButtonClicked"></wxc-button>
     </div>
        
 </template>
 <script>
 
 var navigator = weex.requireModule('bmNavigator')
+import { WxcButton } from 'weex-ui'
 import stepper from '../stepper.vue'
 export default {
-    components: {stepper},
+    components: {stepper,WxcButton},
     mounted() {
     },
     data() {
         return {
-            numbers:10
+            item:{numbers:4}
 
         }
     },
@@ -26,8 +28,23 @@ export default {
 
     },
     methods: {
-        addNumber(){},
-        cutNumber(){}
+        addNumber(item){
+            this.$notice.toast({
+                message: item.numbers
+            })
+        },
+        cutNumber(item){
+            var that = this;
+            this.$notice.toast({
+                message: item.numbers
+            })
+        },
+        wxcButtonClicked(item){
+            var that = this;
+            this.$notice.toast({
+                message: item.numbers
+            })
+        }
 
     }
 }

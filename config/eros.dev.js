@@ -15,6 +15,7 @@ module.exports = {
         'js/pages/home/home.vue',
         'js/pages/my/my.vue',
         'js/pages/cart/checkout/checkout.vue',
+        'js/pages/home/channels/channels.vue'
     ],
     'alias': {
         'Components': 'js/components',

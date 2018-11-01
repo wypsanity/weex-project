@@ -18,4 +18,5 @@ export default{
     CartBatchChecked: MallApiRootUrl + 'user/userCart/batchChecked', // 选择或取消选择商品(√)
     CartDelete: MallApiRootUrl + 'user/userCart/deleteCart', // 删除购物车的商品(√)
     CheckSku: MallApiRootUrl + 'stk/productStock/checkSku', // 查询产品库存(√)
+    GoodsList: MallApiRootUrl + 'goods/goods/getGoodsList',  //获得商品列表（√） 
 }

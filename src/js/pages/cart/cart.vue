@@ -40,8 +40,8 @@
                     </div>
                     <div style="flex:2;justify-content: center;" class="pub-layout-two">
                         <text v-if="!isEditCart" class="cartGood-center-font">x{{item.numbers}}</text>
-                        <stepper v-else step="1" :default-value="item.numbers" min="1" :read-only="true"
-                            @wxcStepperValueCutNumber="cutNumber(index)" @wxcStepperValueAddNumber="addNumber(index)"></stepper>
+                        <stepper v-else :value="item"  min="1"
+                             @wxcStepperValueCutNumber="cutNumber" @wxcStepperValueChanged="numbersChange" @wxcStepperValueAddNumber="addNumber"></stepper>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@ import apis from '../../config/url.apis';
 export default {
     components: { WxcIcon,WxcButton,stepper },
     mounted() {
-        //this.getCartList();
+        this.getCartList();
     },
     data() {
         return {
@@ -239,6 +239,9 @@ export default {
                         })
                     }
                 },error => {
+                    this.$notice.toast({
+                        message: '更新购物车出错'
+                    })
                 })
             
 
@@ -281,15 +284,18 @@ export default {
                      this.cartTotal=that.getCheckedGoodsCountAndAmount();
                 }
             }, error =>{
+                this.$notice.toast({
+                message: '出错'
+            })
             })
         },
-        cutNumber(index){
-            let cartItem = this.cartGoods[index];
-            let numbers = (cartItem.numbers - 1 > 1) ? cartItem.numbers - 1 : 1;
-            //cartItem.numbers = numbers;
-            this.updateCart(cartItem.productId, cartItem.goodsId, numbers, cartItem.id);
+        cutNumber(item){
+            //item从子组件中传过来的
+            // let cartItem = this.cartGoods[index];
+            // let numbers = (cartItem.numbers - 1 > 1) ? cartItem.numbers - 1 : 1;
+            this.updateCart(item.productId, item.goodsId, item.numbers, item.id);
         },
-        numbersChange: function (itemIndex) {
+        numbersChange: function (item) {
             // let cartItem = this.cartGoods[itemIndex];
             // let numbers=0;
             // if (event.detail.value==''){
@@ -298,12 +304,12 @@ export default {
             // numbers = parseInt(event.detail.value)
             // } 
             // this.updateCart(cartItem.productId, cartItem.goodsId, numbers, cartItem.id);
+            this.updateCart(item.productId, item.goodsId, item.numbers, item.id);
         },
-        addNumber(index){
-            let cartItem = this.cartGoods[index];
-            let numbers = cartItem.numbers + 1;
-            //cartItem.numbers = numbers;
-            this.updateCart(cartItem.productId, cartItem.goodsId, numbers, cartItem.id);
+        addNumber(item){
+            //let cartItem = this.cartGoods[index];
+            //let numbers = cartItem.numbers + 1;
+            this.updateCart(item.productId, item.goodsId, item.numbers, item.id);
         },
         updateCart: function (productId, goodsId, numbers, id) {
             let that = this;
@@ -350,6 +356,9 @@ export default {
                         this.cartTotal=that.getCheckedGoodsCountAndAmount();
                     }
                 }, error => {
+                    this.$notice.toast({
+                        message: '查库存出错'
+                    })
                 })
             }
         },

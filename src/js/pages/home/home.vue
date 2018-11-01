@@ -16,7 +16,7 @@
     <home-brand :brands="brands"></home-brand>
     <new-product :newGoods="newGoodss"></new-product>
     <popular-product :hotGoods="hotGoodss"></popular-product>
-    <shop-selection></shop-selection>
+    <shop-selection :locationList="locationList"></shop-selection>
     <good-grid :category-good="item" v-for="(item,index) in categoryGoodss" :key="index" v-if="categoryGoodss.length>0"></good-grid>
     </div>
 </template>
@@ -71,7 +71,14 @@
         console.log(e);
       },
       jump (url){
-          console.log(url);
+          var name = url.split("?")[1];
+          var oneID = name.split("&")[0];
+          var id = oneID.split("=")[1];
+          this.$router.open({
+            name: 'pages.home.channels',
+            navShow : false,
+            params:{id:id}
+        })
       },
       getBanners(){
             var that = this;
@@ -161,6 +168,7 @@
             })
       },
       getLocation(){
+          
           var that = this;
           let params = {
           pageNum: that.page,
@@ -173,8 +181,7 @@
           params.locationId = that.locationId;
         }
         this.$get({ 
-            url: api.showLocation + "?authId=" + app.getAuthId(),
-            data: params
+            url: api.showLocation+'?pageNum='+params.pageNum+'&pageSize='+params.pageSize+'&authId='+params.authId
         }).then(res =>{
             if (res.tips.isOk) {
               var data = [];
@@ -188,6 +195,7 @@
                 }
               }
               this.locationList=data;
+              
             }
         }, error => {
         })
@@ -201,8 +209,6 @@
                   this.categoryTree=res.data;
                   app.indexData.categoryTree=res.data;
                   this.$event.emit('getCatalog')
-                  console.log("123123");
-                  console.log(res.data);
                 }
             }, error => {
             })
