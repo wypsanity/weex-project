@@ -26,7 +26,6 @@
 </template>
 <script>
 import header from './head';
-import { CLASSES, SUBCLASSES } from './config'
 import Config from '../common/config'
 const dom = weex.requireModule('dom');
 const animation = weex.requireModule('animation')
@@ -52,12 +51,9 @@ export default {
              //    this.scrollHeight = data.size.height
              //})
         })
-      //this.getCatalog();
     },
     data() {
         return {
-            classes: [],
-            subclasses: [],
             actIndex: 0,
             scrollHeight: 0,
             tabTitles: Config.tabTitles,
@@ -75,26 +71,6 @@ export default {
             })
         },
         init(){
-
-            // console.log('deviceHeight:' + this.$getConfig().env.deviceHeight);
-            this.getClasses()
-            this.getSubclasses()
-        },
-        getClasses(){
-            // this.$fetch({
-            //     method: 'GET',
-            //     name: 'yanxuan_class_getClasses',
-            //     data: {}
-            // }).then(resData => {
-            //     this.classes = resData.data
-            // }, error => {
-
-            // })
-
-            this.classes = CLASSES
-        },
-        getSubclasses(){
-            
         },
         onscroll(e){
             let formatOffset = Math.abs(e.contentOffset.y)

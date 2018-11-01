@@ -2,15 +2,15 @@
     <div class="wrapper">
         <div class="slogan">
           <div class="head-box pub-layout">
-              <image class="head-image" src="http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/servicePolicyRed-518d32d74b.png"></image>
+              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
               <text class="i-slg">30天无忧退换货</text>
           </div>
           <div class="head-box pub-layout">
-              <image class="head-image" src="http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/servicePolicyRed-518d32d74b.png"></image>
+              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
               <text class="i-slg">48小时快速退款</text>
           </div>
           <div class="head-box pub-layout">
-              <image class="head-image" src="http://nos.netease.com/mailpub/hxm/yanxuan-wap/p/20150730/style/img/icon-normal/servicePolicyRed-518d32d74b.png"></image>
+              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
               <text class="i-slg">满88元免邮费</text>
           </div>
         </div>

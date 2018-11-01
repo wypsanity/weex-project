@@ -1,8 +1,8 @@
 <template>
     <div class="wrapper">
         <div class="header" @click="jumpWeb('http://m.you.163.com/ucenter')">
-            <image class="header-bg" resize="stretch" src="http://yanxuan.nosdn.127.net/6ae93353e95b3450a2710bb43f925a63.jpg"></image>
-            <image class="i-photo" resize="stretch" src="http://yanxuan.nosdn.127.net/885e3901d0a3501362530435d76bebb3.jpg"></image>
+            <image class="header-bg" resize="stretch" src="bmlocal://assets/images/mybackground.jpg"></image>
+            <image class="i-photo" resize="stretch" src=""></image>
             <text class="i-name">abcabc</text>
             <div class="b-tlt">
                 <text class="i-tag tag-v8 iconfont">&#xe6cc;</text>
