@@ -11,7 +11,7 @@
           <scroller class="scroller" :style="contentStyle" >
                 <home></home>
           </scroller>
-
+       
 
       </div>
       <div class="touch-bar" :style="{'height': touchBarHeight}"></div>

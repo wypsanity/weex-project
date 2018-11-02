@@ -1,30 +1,15 @@
 <template>
-   <wxc-tab-page ref="wxc-tab-page"
+  <wxc-tab-page ref="wxc-tab-page"
                 :tab-titles="navList"
                 :tab-styles="tabStyles"
                 title-type="text"
+                :needSlider="needSlider"
+                :is-tab-view="isTabView"
                 :tab-page-height="tabPageHeight"
+                :spm-c="4307989"
                 @wxcTabPageCurrentTabSelected="wxcTabPageCurrentTabSelected">
-    <!--<list v-for="(v,index) in tabList"
-          :key="index"
-          class="item-container"
-          :style="{ height: (tabPageHeight - tabStyles.height) + 'px' }">
-      <cell class="border-cell"></cell>
-    <cell v-for="(demo,key) in v"
-            class="cell"
-            :key="key">
-        <wxc-pan-item @wxcPanItemPan="wxcPanItemPan">
-            <div class="content">
-                <text>{{key}}</text>
-            </div>    
-        </wxc-pan-item>
-      </cell>
-    </list>-->
-    <scroller class="item-container" :style="{ height: (tabPageHeight - tabStyles.height) + 'px' }">
-     <good-grid :categoryGood="goodsList"></good-grid>
-     </scroller>
+  
   </wxc-tab-page>
-
 </template>
 
 <style scoped>
@@ -32,8 +17,7 @@
     width: 750px;
     background-color: #f2f3f4;
   }
-
-  .border-cell {
+  .border-cell{
     background-color: #f2f3f4;
     width: 750px;
     height: 24px;
@@ -43,92 +27,84 @@
     border-style: solid;
     border-color: #e0e0e0;
   }
-
-  .cell {
+  .cell{
     background-color: #ffffff;
   }
-
-  .content{
-    width:750px;
-    height:300px;
-    border-bottom-width:1px;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
+  </style>
 <script>
+  const dom = weex.requireModule('dom');
   import { WxcTabPage, WxcPanItem, Utils, BindEnv } from 'weex-ui';
-  import GoodGrid from './GoodGrid.vue'
-  import Config from './config'
+  import WxcItem from './wxc-item.vue';
+  import Config from './config';
   import app from '../../app';
   import api from '../../../config/url.apis';
   export default {
-    components:{ WxcTabPage, WxcPanItem,GoodGrid },
-    data: () =>({
+    components: { WxcTabPage, WxcPanItem, WxcItem },
+    data: () => ({
       tabTitles: Config.tabTitles,
       tabStyles: Config.tabStyles,
       tabList: [],
+      needSlider: true,
       demoList: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      supportSlide: true,
+      isTabView: true,
       tabPageHeight: 1334,
+      desc: [{
+        type: 'text',
+        value: '特价机票|班期:清明 3/27-4/2等',
+        theme: 'gray'
+      }],
+      tags: [{
+        type: 'tag',
+        value: '满100减20测试',
+        theme: 'yellow'
+      }],
       id:'',
       page: 1,
       size: 1000,
       currentCategory: {},
       navList: [],
       goodsList: [],
+      mytabTitle:[{"children":null,"id":"1010001","title":"内衣0","name":"内衣","keywords":null,"frontDesc":"自然染料，亲肤舒适","parentId":"1010000","sortOrder":2,"bannerUrl":"http://yanxuan.nosdn.127.net/20279e1753e4eedc6e347857acda9681.png","iconUrl":null,"imgUrl":"http://yanxuan.nosdn.127.net/02fede55aba1bc6c9d7f7c01682f9e2d.png","wapBannerUrl":null,"frontName":"给你贴身的关怀","count":8,"nodeId":"1010001"},
+      {"children":null,"id":"1010001","title":"内衣1","name":"内衣","keywords":null,"frontDesc":"自然染料，亲肤舒适","parentId":"1010000","sortOrder":2,"bannerUrl":"http://yanxuan.nosdn.127.net/20279e1753e4eedc6e347857acda9681.png","iconUrl":null,"imgUrl":"http://yanxuan.nosdn.127.net/02fede55aba1bc6c9d7f7c01682f9e2d.png","wapBannerUrl":null,"frontName":"给你贴身的关怀","count":8,"nodeId":"1010001"},
+      {"children":null,"id":"1010001","title":"内衣2","name":"内衣","keywords":null,"frontDesc":"自然染料，亲肤舒适","parentId":"1010000","sortOrder":2,"bannerUrl":"http://yanxuan.nosdn.127.net/20279e1753e4eedc6e347857acda9681.png","iconUrl":null,"imgUrl":"http://yanxuan.nosdn.127.net/02fede55aba1bc6c9d7f7c01682f9e2d.png","wapBannerUrl":null,"frontName":"给你贴身的关怀","count":8,"nodeId":"1010001"},
+      {"children":null,"id":"1010001","title":"内衣3","name":"内衣","keywords":null,"frontDesc":"自然染料，亲肤舒适","parentId":"1010000","sortOrder":2,"bannerUrl":"http://yanxuan.nosdn.127.net/20279e1753e4eedc6e347857acda9681.png","iconUrl":null,"imgUrl":"http://yanxuan.nosdn.127.net/02fede55aba1bc6c9d7f7c01682f9e2d.png","wapBannerUrl":null,"frontName":"给你贴身的关怀","count":8,"nodeId":"1010001"},]
     }),
-    created (){
+    created () {
       this.tabPageHeight = Utils.env.getPageHeight();
-      this.tabList = [...Array(this.tabTitles.length).keys()].map(i => []);
-      Vue.set(this.tabList, 0, this.demoList);
+      //this.tabList = [...Array(this.tabTitles.length).keys()].map(i => []);
+      //Vue.set(this.tabList, 0, this.demoList);
       this.$router.getParams().then(resData => {
             this.id=resData.id;
             console.log(this.id);
         })
-        this.getCategoryInfo();
+        
     },
-    methods:{
+    mounted(){
+         //this.$refs['wxc-tab-page'].setPage(5)
+         this.getCategoryInfo();
+    },
+    beforeCreate() {
+    },
+    methods: {
       wxcTabPageCurrentTabSelected (e) {
-        // const self = this;
-        // const index = e.page;
+        const self = this;
+        const index = e.page;
+        /* 未加载tab模拟数据请求 */
         // if (!Utils.isNonEmptyArray(self.tabList[index])) {
         //   setTimeout(() => {
         //     Vue.set(self.tabList, index, self.demoList);
         //   }, 100);
         // }
       },
-      wxcPanItemPan (e){
+      wxcPanItemPan (e) {
         if (BindEnv.supportsEBForAndroid()) {
           this.$refs['wxc-tab-page'].bindExp(e.element);
         }
       },
-      nameToTitle(list){
-          list.forEach(i=>{
-              i.title=i.name;
-          });
-      },
-      getCategoryInfo: function () {     
+      getCategoryInfo () {     
         let that = this; 
-        if (app.navList.length>0){
-        app.navList.forEach(nav=>{
-            if (nav.id == that.id) {
-                this.navList=nav.children;
-                this.nameToTitle(this.navList);
-            }else if(nav.children){
-            nav.children.forEach(i=>{
-                if (i.id == that.id){
-                    this.navList=nav.children;
-                    this.nameToTitle(this.navList);
-                    this.currentCategory=i
-                return;
-                }
-            })
-            }
-        })
-        that.getGoodsList();
-
-        }else{
-            this.$notice.loading.show("正在加载")
+       
             this.$fetch({
                     method: 'GET',    
                     url: api.CatalogList,
@@ -137,55 +113,46 @@
                     }
                 }).then(res => {
                     if (res.tips.isOk) {
-                        this.$notice.loading.hide()
                         app.navList = res.data.children;
-                        app.navList.forEach(nav => {
-                        if (nav.id == that.id){
-                            this.navList=nav.children;
-                            this.nameToTitle(this.navList);
-                            this.currentCategory=nav;
-                        }else if (nav.children) {
-                        nav.children.forEach(i => {
-                            if (i.id == that.id) {
-                                this.navList=nav.children;
-                                this.nameToTitle(this.navList);
-                                this.currentCategory=i;
-                            return;
-                            }
-                        })
-                        }       
-                    })
-                    that.getGoodsList();
+                          app.navList.forEach(nav => {
+                          if (nav.id == that.id){
+                              this.navList=nav.children;
+                              this.nameToTitle(this.navList);
+                              this.currentCategory=nav;
+                              this.$nextTick(()=>{
+                                      this.$refs['wxc-tab-page'].setPage(2);
+                                  });
+                          }else if (nav.children) {
+                             var navIndex = 0;
+                          nav.children.forEach(i => {
+                              navIndex = navIndex + 1
+                              if (i.id == that.id) {
+                                  this.navList=nav.children;
+                                  // var arr = [];
+                                  // arr.push(...nav.children);
+                                  // this.navList=arr;
+                                  this.nameToTitle(this.navList);
+                                  this.currentCategory=i;
+                                  console.log("456789");
+                                  console.log(this.navList);
+                                  this.$nextTick(()=>{
+                                      this.$refs['wxc-tab-page'].setPage(2);
+                                  });
+                                  
+                              }
+                          })
+                          }       
+                      })
                     }
-                }, error => {
-                    this.$notice.alert({
-                        title: "查询失败",
-                        message: '消息',
-                        okTitle: '确认',
-                        callback() {
-                        }
-                    })
+                }, error =>{
                 })
-        }
       },
-      getGoodsList: function () {
-            var that = this;
-            this.$fetch({
-                    method: 'GET',    
-                    url: api.GoodsList+"?authId="+app.getAuthId(),
-                    data: {
-                        categoryId: that.id, 
-                        pageNum: that.page, 
-                        pageSize: that.size
-                    }
-                }).then(res => {
-                    if (res.tips.isOk) {
-                         this.goodsList=res.data.goodsList;
-                         console.log(this.goodsList);
-                    }
-                }, error => {
-                })
-        },
+      nameToTitle(list){
+        list.forEach(i=>{
+            i.title=i.name;
+        });
+      },
+      
     }
   };
 </script>

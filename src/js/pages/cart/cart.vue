@@ -23,12 +23,12 @@
          <scroller class="scroller" :style="scroStyle" >
             <div> 
                 <div v-for="(item,index) in cartGoods" class="cartGood-layout pub-layout">
-                    <div style="flex:0.7" class="cart-bottom-layout pub-layout" @click="checkedItem(index)">
+                    <div style="flex:7" class="cart-bottom-layout pub-layout" @click="checkedItem(index)">
                     <image v-if="item.checked=='1'" class="checkboxsize" resize="stretch" src="bmlocal://assets/images/checkbox-t.png"></image>
                     <image v-else class="checkboxsize" resize="stretch" src="bmlocal://assets/images/checkbox-f.png"></image>
                         
                     </div>
-                    <div style="flex:4;" class="pub-layout">
+                    <div style="flex:40;" class="pub-layout">
                         <div style="flex:1;" class="cartGood-center pub-layout">
                             <image class="cartGood-image" resize="stretch" :src="item.listPicUrl"></image>
                         </div>
@@ -38,7 +38,7 @@
                             <text class="cartGood-center-font">￥{{item.retailPrice}}</text>
                         </div>
                     </div>
-                    <div style="flex:2;justify-content: center;" class="pub-layout-two">
+                    <div style="flex:20;justify-content: center;" class="pub-layout-two">
                         <text v-if="!isEditCart" class="cartGood-center-font">x{{item.numbers}}</text>
                         <stepper v-else :value="item"  min="1"
                              @wxcStepperValueCutNumber="cutNumber" @wxcStepperValueChanged="numbersChange" @wxcStepperValueAddNumber="addNumber"></stepper>
@@ -46,18 +46,18 @@
                 </div>
             </div>
             <div class="cart-bottom pub-layout">
-                <div style="height:100px;flex:1.5;" class="cart-bottom-layout pub-layout" @click="checkedAll()">
+                <div style="height:100px;flex:15;" class="cart-bottom-layout pub-layout" @click="checkedAll()">
                     <image v-if="checkedAllStatus" class="checkboxsize" resize="stretch" src="bmlocal://assets/images/checkbox-t.png"></image>
                     <image v-else class="checkboxsize" resize="stretch" src="bmlocal://assets/images/checkbox-f.png"></image>             
                     <text class="hidden-text">全选({{checkedAllStatus?cartTotal.checkedGoodsCount:0}})</text>
                 </div>
-                <div style="height:100px;flex:1.8;" class="cart-bottom-layout-two pub-layout">
+                <div style="height:100px;flex:18;" class="cart-bottom-layout-two pub-layout">
                     <text class="hidden-text" style="width: 200px;">{{'￥'+cartTotal.checkedGoodsAmount}}</text>
                 </div>
-                <div style="height:100px;flex:0.7;" class="cart-bottom-layout pub-layout" @click="editCart()">
+                <div style="height:100px;flex:7;" class="cart-bottom-layout pub-layout" @click="editCart()">
                     <text>{{!isEditCart?'编辑':'完成'}}</text>
                 </div>
-                <div style="height:100px;flex:1.5;">
+                <div style="height:100px;flex:15;">
                     <wxc-button v-if="!isEditCart" text="下单" :btn-style="btnStyle" type="red" @wxcButtonClicked="checkoutOrder"></wxc-button>
                     <wxc-button v-else text="删除所选" :btn-style="btnStyle" type="red" @wxcButtonClicked="deleteCart"></wxc-button>
                 </div>
