@@ -9,16 +9,18 @@
                 :spm-c="4307989"
                 @wxcTabPageCurrentTabSelected="wxcTabPageCurrentTabSelected">
 
-    <scroller class="item-container" :style="{ height: (tabPageHeight - tabStyles.height) + 'px' }" v-for="(item,index) in eachList">
-      <div v-if="goodsList.length>0">
+    <scroller class="item-container" :style="{ height: (tabPageHeight - tabStyles.height) + 'px' }" v-for="(item,index) in navList">
+      <div v-if="tagindex==index">
+      <div>
       <div class="cate-layout">
         <text class="name">{{currentCategory.name}}</text>
         <text class="desc">{{currentCategory.frontName}}</text>
       </div>
-      <good-grid :categoryGood="goodsList"></good-grid>
+      <good-grid v-if="goodsList.length>0" :categoryGood="goodsList"></good-grid>
       </div>
       <div class="cate-layout" v-if="goodsList.length<=0">
           <text class="text">此类商品还未上架</text>
+      </div>
       </div>
     </scroller>
   </wxc-tab-page>
@@ -72,14 +74,13 @@
       navList: [],
       goodsList: [],
       eachList:[],
+      tagindex:0
     }),
     created () {
       this.tabPageHeight = Utils.env.getPageHeight();
       this.$router.getParams().then(resData => {
             this.id=resData.id;
-            console.log(this.id);
         })
-        
     },
     mounted(){
          this.getCategoryInfo();
@@ -91,17 +92,23 @@
         this.tabStyles.activeBottomColor='#FFC900';
         const self = this;
         const index = e.page;
-        /* 未加载tab模拟数据请求 */
-        // if (!Utils.isNonEmptyArray(self.tabList[index])) {
-        //   setTimeout(() => {
-        //     Vue.set(self.tabList, index, self.demoList);
-        //   }, 100);
-        // }
-      },
-      wxcPanItemPan (e) {
-        if (BindEnv.supportsEBForAndroid()) {
-          this.$refs['wxc-tab-page'].bindExp(e.element);
+        if(this.id==this.navList[index].id){
+            return;
         }
+        this.tagindex=index;
+        this.id=this.navList[index].id;
+        this.tagindex=index;
+       app.navList.forEach(nav=>{
+            if(nav.children){
+              var navIndex = 0;
+            nav.children.forEach(i=>{
+                if (i.id == this.id){
+                    this.currentCategory=i
+                }
+            })
+            }
+        })
+        this.getGoodsList();
       },
       getCategoryInfo () {     
         let that = this; 
@@ -110,19 +117,20 @@
             if (nav.id == that.id) {
                 this.navList=nav.children;
                 this.nameToTitle(this.navList);
-                this.eachList = [...this.navList];
+                //this.eachList = [...this.navList];
                 this.tabStyles.activeBottomColor='#FFFFFF';
                 this.tabStyles.activeTitleColor='#666666';
                 this.currentCategory=nav;
             }else if(nav.children){
               var navIndex = 0;
             nav.children.forEach(i=>{
+                  navIndex = navIndex + 1
                 if (i.id == that.id){
-                    navIndex = navIndex + 1
                     this.navList=nav.children;
-                    this.eachList = [...this.navList];
+                    //this.eachList = [...this.navList];
                     this.nameToTitle(this.navList);
                     this.currentCategory=i
+                    this.tagindex = navIndex-1
                     this.$nextTick(()=>{
                         this.$refs['wxc-tab-page'].setPage(navIndex-1);
                     });
@@ -146,7 +154,7 @@
                           if (nav.id == that.id){
                               this.navList=nav.children;
                               this.nameToTitle(this.navList);
-                              this.eachList = [...this.navList];
+                              //this.eachList = [...this.navList];
                               this.currentCategory=nav;
                               this.tabStyles.activeBottomColor='#FFFFFF';
                               this.tabStyles.activeTitleColor='#666666';
@@ -158,9 +166,10 @@
                                 console.log(i.id);
                                 console.log(navIndex);
                                   this.navList=nav.children;
-                                  this.eachList = [...this.navList];
+                                  //this.eachList = [...this.navList];
                                   this.nameToTitle(this.navList);
                                   this.currentCategory=i;
+                                  this.tagindex = navIndex-1
                                   this.$nextTick(()=>{
                                       this.$refs['wxc-tab-page'].setPage(navIndex-1);
                                   });
