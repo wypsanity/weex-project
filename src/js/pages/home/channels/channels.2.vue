@@ -8,8 +8,7 @@
                 :tab-page-height="tabPageHeight"
                 :spm-c="4307989"
                 @wxcTabPageCurrentTabSelected="wxcTabPageCurrentTabSelected">
-
-    <scroller class="item-container" :style="{ height: (tabPageHeight - tabStyles.height) + 'px' }" v-for="(item,index) in eachList">
+    <scroller class="item-container" :style="{ height: (tabPageHeight - tabStyles.height) + 'px' }">
       <div v-if="goodsList.length>0">
       <div class="cate-layout">
         <text class="name">{{currentCategory.name}}</text>
@@ -71,7 +70,6 @@
       currentCategory: {},
       navList: [],
       goodsList: [],
-      eachList:[],
     }),
     created () {
       this.tabPageHeight = Utils.env.getPageHeight();
@@ -110,7 +108,6 @@
             if (nav.id == that.id) {
                 this.navList=nav.children;
                 this.nameToTitle(this.navList);
-                this.eachList = [...this.navList];
                 this.tabStyles.activeBottomColor='#FFFFFF';
                 this.tabStyles.activeTitleColor='#666666';
                 this.currentCategory=nav;
@@ -120,7 +117,6 @@
                 if (i.id == that.id){
                     navIndex = navIndex + 1
                     this.navList=nav.children;
-                    this.eachList = [...this.navList];
                     this.nameToTitle(this.navList);
                     this.currentCategory=i
                     this.$nextTick(()=>{
@@ -146,7 +142,6 @@
                           if (nav.id == that.id){
                               this.navList=nav.children;
                               this.nameToTitle(this.navList);
-                              this.eachList = [...this.navList];
                               this.currentCategory=nav;
                               this.tabStyles.activeBottomColor='#FFFFFF';
                               this.tabStyles.activeTitleColor='#666666';
@@ -158,7 +153,6 @@
                                 console.log(i.id);
                                 console.log(navIndex);
                                   this.navList=nav.children;
-                                  this.eachList = [...this.navList];
                                   this.nameToTitle(this.navList);
                                   this.currentCategory=i;
                                   this.$nextTick(()=>{

@@ -8,10 +8,10 @@
     </slider>
 
     <div :class="['m-menu',channels.length>=5 ? 'm-menuMore' : '']">
-              <span class="m-menu-item" v-for="item in channels" @click="jump(item.url)">
+              <div class="m-menu-item" v-for="item in channels" @click="jump(item.url)">
                 <image class="m-image" :src="item.iconUrl"></image>
                 <text class="m-menu-text">{{item.name}}</text>
-              </span>
+              </div>
     </div>
     <home-brand :brands="brands"></home-brand>
     <new-product :newGoods="newGoodss"></new-product>

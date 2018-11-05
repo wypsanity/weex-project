@@ -1,7 +1,6 @@
 .iconfont {
     font-family: iconfont;
 }
-
 .wrapper {
     background-color: #f4f4f4;
 }
@@ -61,11 +60,6 @@
     border-radius: 4px;
 }
 
-.tag-e {
-    width: 32px;
-    height: 32px;
-}
-
 .tag-v8 {
     color: #fff;
     background-color: #b29e75;
@@ -93,7 +87,7 @@
     font-size: 40px;
     padding-top: 18px;
     color: #fff;
-    background-color: rgba(255, 255, 255, .3);
+    background-color: #666666;
 }
 
 .s-box {
@@ -159,5 +153,5 @@
 
 .border-bottom {
     border-bottom-width: 1px;
-    border-bottom-color: rgba(0, 0, 0, .15);
+    border-bottom-color: #f3f3f3;
 }

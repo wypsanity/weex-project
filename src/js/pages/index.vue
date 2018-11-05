@@ -17,10 +17,18 @@
     	},
 		beforeCreate () {
 			var domModule = weex.requireModule('dom');
+			// domModule.addRule('fontFace', {
+			// 	fontFamily: 'iconfont',
+			// 	src: "url('bmlocal://iconfont/iconfont.css')",
+			// 	src: "url('bmlocal://iconfont/iconfont.eot')",
+			// 	src: "url('bmlocal://iconfont/iconfont.svg')",
+			// 	src: "url('bmlocal://iconfont/iconfont.ttf')",
+			// 	src: "url('bmlocal://iconfont/iconfont.woff')"
+			// });
 			domModule.addRule('fontFace', {
-				'fontFamily': 'iconfont',
-				'src': "url(\'bmlocal://assets/iconfont/font_404010.ttf\')"
-			});
+            'fontFamily': 'iconfont',
+            'src': "url('bmlocal://iconfont/font-404010.ttf')"
+        	});
 		},
 		created () {
 			this.androidFinishApp()

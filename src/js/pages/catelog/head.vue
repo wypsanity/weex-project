@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <text class="search iconfont">&#xe65c; 商品搜索, 好商品随意挑</text>
+         <text class="search iconfont">&#xe65c; 商品搜索, 好商品随意挑</text>
     </div>
 </template>
 <script>

@@ -9,7 +9,7 @@
       <head :title="allTitle"></head>
       <div class="item-container-index" :style="contentStyle">  
           <scroller class="scroller" :style="contentStyle" >
-                <home></home>
+               <home></home>
           </scroller>
        
 
