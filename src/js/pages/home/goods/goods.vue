@@ -2,20 +2,36 @@
   <div>
   <top-bar></top-bar>
     <scroller class="item-container" :style="{ height: (tabPageHeight - 120) + 'px' }">
-        <div @click="previewImg">
+        <div>
             <slider class="slider" auto-play="true" interval="5000" infinite="false" >
-                <div class="frame">
+                <div class="frame" @click="previewImg">
                     <image class="image" resize="stretch" :src="goodsInfo.primaryPicUrl"></image>
                 </div>
-                <div class="frame">
+                <div class="frame" @click="previewImg">
                     <image class="image" resize="stretch" :src="goodsInfo.listPicUrl"></image>
                 </div>
-                <div class="frame" v-for="img in gallerys">
+                <div class="frame" v-for="img in gallerys" @click="previewImg">
                     <image class="image" resize="stretch" :src="img.imgUrl"></image>
                 </div>
                 <indicator class="indicator"></indicator>
             </slider>
+         </div>
+         <div style="background-color:#f4f4f4" class="slogan">
+          <div class="head-box pub-layout">
+              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
+              <text class="i-slg">30天无忧退换货</text>
+          </div>
+          <div class="head-box pub-layout">
+              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
+              <text class="i-slg">48小时快速退款</text>
+          </div>
+          <div class="head-box pub-layout">
+              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
+              <text class="i-slg">满88元免邮费</text>
+          </div>
         </div>
+
+
     </scroller>
     <div class="bar-bottom">
         <div style="flex:2;" class="box-o">
@@ -33,7 +49,7 @@
         <div style="flex:3;background-color:#089bf0;" class="box-cantBuy">
             <text class="txt">拼团购买</text>
         </div>
-        <div style="flex:3;background-color:#4c7903;" class="box-shop">
+        <div style="flex:3;background-color:#4c7903;" class="box-shop" @click="previewImg">
             <text class="txt">加入购物车</text>
         </div> 
     </div>
@@ -41,6 +57,7 @@
 </template>
 
 <style lang="sass" scoped>
+@import '../../cart/cart';
   .item-container {
     width: 750px;
     background-color: #f2f3f4;
@@ -155,21 +172,17 @@
         })
     },
     methods: {
-        previewImg(){
-        //     var images = [];
-        //     images.push(this.goodsInfo.primaryPicUrl);
-        //     images.push(this.goodsInfo.listPicUrl);
-        //     this.gallerys.forEach(element => {
-        //         images.push(element.imgUrl);
-        //     });
-        //   this.$image.preview({
-        //     index:0,
-        //     images:images,
-        //   });
-        console.log("4564564566");
-        this.$notice.toast({
-            message: '消息'
-        })
+        previewImg(e){
+            var images = [];
+            images.push(this.goodsInfo.primaryPicUrl);
+            images.push(this.goodsInfo.listPicUrl);
+            this.gallerys.forEach(element => {
+                images.push(element.imgUrl);
+            });
+          this.$image.preview({
+            index:0,
+            images:images,
+          });
         },
       getGoodsGallerys: function () {
             var that = this;
