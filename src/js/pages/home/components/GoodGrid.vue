@@ -15,7 +15,7 @@
                         <text class="price">￥{{good.retailPrice}}</text>
                     </div>
                 </div>
-                <div class="txtdiv" v-if="showMore">
+                <div class="txtdiv" v-if="showMore" @click="jump(categoryGood.id)">
                     <text class="txt">更多{{categoryGood.name}}好物</text>
                     <image class="icon" src="bmlocal://assets/images/icon_go_more.png" resize="stretch"></image>
                 </div>
@@ -50,6 +50,14 @@
     },
     components: {},
     methods:{
+        jump (url){
+          var id = url;
+          this.$router.open({
+            name: 'pages.home.channels',
+            navShow : false,
+            params:{id:id}
+        })
+      },
     }
   }
 </script>

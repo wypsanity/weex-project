@@ -19,4 +19,6 @@ export default{
     CartDelete: MallApiRootUrl + 'user/userCart/deleteCart', // 删除购物车的商品(√)
     CheckSku: MallApiRootUrl + 'stk/productStock/checkSku', // 查询产品库存(√)
     GoodsList: MallApiRootUrl + 'goods/goods/getGoodsList',  //获得商品列表（√） 
+    BrandDetail: MallApiRootUrl + 'pub/brand/list',  //品牌详情（√） 
+    GoodsGallerys: MallApiRootUrl + 'goods/gallery/list/byGoodsId',  //获得商品的相册（√） 
 }

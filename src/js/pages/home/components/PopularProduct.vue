@@ -4,7 +4,7 @@
             <div>
             <text class="type-title font-md">人气推荐</text>
             </div>
-            <div class="popular-box" v-for="item in hotGoods">
+            <div class="popular-box" v-for="item in hotGoods" @click="jump(item)">
                 <div class="box-left">
                     <image class="box-image" :src="item.listPicUrl" resize="stretch"></image>
                 </div>
@@ -28,6 +28,13 @@
     },
     components: {},
     methods:{
+        jump (item){
+          this.$router.open({
+            name: 'pages.home.goods',
+            navShow : false,
+            params:{item:item}
+        })
+      },
     }
   }
 </script>

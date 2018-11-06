@@ -18,6 +18,12 @@ export default {
     },
     'pages.home.channels' : {
         url: '/pages/home/channels/channels.js',
+    },
+    'pages.home.brandDetail' : {
+        url: '/pages/home/brandDetail/brandDetail.js',
+    },
+    'pages.home.goods' : {
+        url: '/pages/home/goods/goods.js',
     }
     
 }

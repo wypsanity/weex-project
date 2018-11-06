@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <top-bar></top-bar>
   <wxc-tab-page ref="wxc-tab-page"
                 :tab-titles="navList"
                 :tab-styles="tabStyles"
@@ -18,12 +20,14 @@
       </div>
       <good-grid v-if="goodsList.length>0" :categoryGood="goodsList"></good-grid>
       </div>
-      <div class="cate-layout" v-if="goodsList.length<=0">
+      <div class="cate-layout-two" :style="{ height: (tabPageHeight - tabStyles.height-100) + 'px' }" v-if="goodsList.length<=0">
+          <image style="width:300px;height:300px" src="bmlocal://assets/images/loseFind.png"></image>
           <text class="text">此类商品还未上架</text>
       </div>
       </div>
     </scroller>
   </wxc-tab-page>
+  </div>
 </template>
 
 <style scoped>
@@ -39,6 +43,13 @@
     align-items: center;
     justify-content: center;
   }
+  .cate-layout-two{
+    width: 750px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 100px;
+  }
   .name{
     height:35px;
     margin-bottom:10px;
@@ -49,17 +60,17 @@
     height:24px;
     font-size:24px;
     color:#999;
-
   }
   </style>
 <script>
-  import { WxcTabPage, WxcPanItem, Utils, BindEnv } from 'weex-ui';
+  import { WxcTabPage, Utils } from 'weex-ui';
   import Config from './config';
   import app from '../../app';
   import api from '../../../config/url.apis';
-  import GoodGrid from './GoodGrid.vue'
+  import GoodGrid from '../components/GoodGridTwo.vue'
+  import TopBar from '../../components/TopBar.vue'
   export default {
-    components: { WxcTabPage, WxcPanItem,GoodGrid},
+    components: { WxcTabPage,GoodGrid,TopBar},
     data: () => ({
       tabTitles: Config.tabTitles,
       tabStyles: Config.tabStyles,
@@ -74,16 +85,17 @@
       navList: [],
       goodsList: [],
       eachList:[],
-      tagindex:0
+      tagindex:0,
     }),
     created () {
       this.tabPageHeight = Utils.env.getPageHeight();
       this.$router.getParams().then(resData => {
             this.id=resData.id;
+            this.getCategoryInfo();
         })
     },
     mounted(){
-         this.getCategoryInfo();
+         
     },
     beforeCreate() {
     },
@@ -202,11 +214,10 @@
                 }).then(res => {
                     if (res.tips.isOk) {
                          this.goodsList=res.data.goodsList;
-                         console.log(this.goodsList);
                     }
                 }, error => {
                 })
-        },
+        }
       
     }
   };
