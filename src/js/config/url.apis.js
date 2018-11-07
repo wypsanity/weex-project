@@ -21,4 +21,5 @@ export default{
     GoodsList: MallApiRootUrl + 'goods/goods/getGoodsList',  //获得商品列表（√） 
     BrandDetail: MallApiRootUrl + 'pub/brand/list',  //品牌详情（√） 
     GoodsGallerys: MallApiRootUrl + 'goods/gallery/list/byGoodsId',  //获得商品的相册（√） 
+    GoodsComments: MallApiRootUrl + 'goods/comment/list/byGoodsId',  //获得商品的评论（√） 
 }

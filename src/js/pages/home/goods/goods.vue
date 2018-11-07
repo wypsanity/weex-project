@@ -1,7 +1,7 @@
 <template>
   <div>
   <top-bar></top-bar>
-    <scroller class="item-container" :style="{ height: (tabPageHeight - 120) + 'px' }">
+        <scroller class="item-container" :style="{ height: contentHeight + 'px' }">
         <div>
             <slider class="slider" auto-play="true" interval="5000" infinite="false" >
                 <div class="frame" @click="previewImg">
@@ -16,24 +16,47 @@
                 <indicator class="indicator"></indicator>
             </slider>
          </div>
-         <div style="background-color:#f4f4f4" class="slogan">
-          <div class="head-box pub-layout">
-              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
-              <text class="i-slg">30天无忧退换货</text>
-          </div>
-          <div class="head-box pub-layout">
-              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
-              <text class="i-slg">48小时快速退款</text>
-          </div>
-          <div class="head-box pub-layout">
-              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
-              <text class="i-slg">满88元免邮费</text>
-          </div>
+        <three-tag></three-tag>
+        <div class="three-info">
+            <text class="three-info-txt-a three-info-hidden">{{goodsInfo.name}}</text>
+            <text class="three-info-txt-b three-info-hidden">{{goodsInfo.goodsBrief}}</text>
+            <text class="three-info-txt-c three-info-hidden">￥{{goodsInfo.retailPrice}}</text>
         </div>
-
-
+        <div>
+             <wxc-cell title="请选择规格数量"
+                :has-arrow="true"
+                @wxcCellClicked="wxcCellClicked"
+                :has-top-border="true"></wxc-cell>
+        </div>
+        <div style="height:20px;"></div>
+        <div>
+            <wxc-cell title="评价"
+                    :has-arrow="true"
+                    @wxcCellClicked="wxcCellClicked"
+                    :has-bottom-border="true"></wxc-cell>
+            <div class="comments-box">
+             <div class="com-box-a">
+                 <div class="com-box-a-left">
+                     <image style="height:80px;width:80px;border-radius: 130px;margin-left:20px" resize="stretch" :src="comments[0].headimgurl"></image>
+                     <text style="margin-left:20px;" class="three-info-hidden">{{comments[0].nickname}}</text>
+                 </div>
+                 <div class="com-box-a-right">
+                     <text class="three-info-hidden">{{comments[0].addTime}}</text>
+                 </div>
+             </div>
+             <div class="com-box-b">
+                <div class="com-box-a-right">
+                 <text class="three-info-hidden" style="margin-left:20px;">{{comments[0].remark}}</text>
+                </div>
+             </div>
+             <div class="com-box-b" v-if="comments[0].picList&&comments[0].picList.length > 0">
+                 <image style="height:80px;width:80px;margin-left:10px;" v-for="i in comments[0].picList" resize="stretch" :src="i.picUrl"></image>
+             </div>
+            </div>
+        </div>
+        <text v-html="456789"></text>
     </scroller>
-    <div class="bar-bottom">
+    <div class="bar-bottom" :style="{'height': tabbarHeight}">
         <div style="flex:2;" class="box-o">
             <image class="icon" resize="stretch" :src="collectBackImage"></image>
         </div>
@@ -49,7 +72,7 @@
         <div style="flex:3;background-color:#089bf0;" class="box-cantBuy">
             <text class="txt">拼团购买</text>
         </div>
-        <div style="flex:3;background-color:#4c7903;" class="box-shop" @click="previewImg">
+        <div style="flex:3;background-color:#4c7903;" class="box-shop" @click="showweex">
             <text class="txt">加入购物车</text>
         </div> 
     </div>
@@ -57,7 +80,6 @@
 </template>
 
 <style lang="sass" scoped>
-@import '../../cart/cart';
   .item-container {
     width: 750px;
     background-color: #f2f3f4;
@@ -66,7 +88,6 @@
     position: fixed;
     bottom: 0px;
     width: 750px;
-    height:120px;
     background-color: #fff;
     display: flex;;
     flex-direction: row;
@@ -96,7 +117,7 @@
     font-size: 18px;
     color: #fff;
     line-height: 28px;
-    border-radius: 50%;
+    border-radius: 130px;
   }
   .box-buy{
     border-right-width: 1px;
@@ -141,14 +162,70 @@
         height: 630px;
         position: relative;
     }
+    .three-info{
+        width:750px;
+        height:250px;
+        background-color:#fff;
+        display:flex;
+        flex-direction:column;
+        flex-wrap:nowrap;
+        justify-content:center;
+        align-items:center;
+    }
+    .three-info-txt-a{
+        font-size:60px;
+        height:60px;
+    }
+    .three-info-hidden{overflow:hidden;}
+    .three-info-txt-b{
+        font-size:20px;
+        height:20px;
+        color:#999;
+         margin-top:20px;
+    }
+    .three-info-txt-c{
+        margin-top:20px;
+        font-size:40px;
+        color:#b4282d;
+        height:40px;
+    }
+    .comments-box{
+        background-color:#fff;
+        width:750px;
+        display:flex;
+        flex-direction:column;
+        flex-wrap:nowrap;
+    }        
+    .com-box-a{
+        height:100px;
+        display:flex;
+        flex-direction:row;
+    }
+    .com-box-b{
+        height:100px;
+    }
+    .com-box-a-left{
+        flex:1;
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+    }
+    .com-box-a-right{
+        flex:2;
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+    }
 </style>
 <script>
   import {Utils} from 'weex-ui';
   import app from '../../app';
   import api from '../../../config/url.apis';
   import TopBar from '../../components/TopBar.vue'
+  import ThreeTag from '../../components/ThreeTag.vue'
+  import { WxcCell } from 'weex-ui';
   export default {
-    components: {TopBar},
+    components: {TopBar,ThreeTag,WxcCell},
     data: () => ({
       tabPageHeight: 1334,
       id:'',
@@ -156,7 +233,12 @@
       size: 10,
       goodsInfo:{},
       collectBackImage: "bmlocal://assets/images/icon_collect.png",
-      gallerys:[]
+      gallerys:[],
+      tabbarHeight: weex.config.eros.tabbarHeight ? weex.config.eros.tabbarHeight : 120,
+      contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.tabbarHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight,
+      comments: [],
+      commentsTotal:0,
+      img:'v-html指令',
     }),
     created () {
       this.tabPageHeight = Utils.env.getPageHeight();
@@ -169,6 +251,7 @@
             that.id= resData.item.id;
             that.goodsInfo = resData.item;
             this.getGoodsGallerys();
+            this.getGoodsComments();
         })
     },
     methods: {
@@ -197,8 +280,29 @@
                         this.gallerys=res.data
                     }
                 }, error => {
-                    console.log("出错");
                 })
+        },
+        getGoodsComments: function () {
+            var that = this;
+            this.$fetch({
+                    method: 'GET',    
+                    url: api.GoodsComments + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    data: {
+                         goodsId: that.id 
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                        this.comments=res.data;
+                        this.commentsTotal=res.total;
+                    }
+                }, error => {
+                })
+        },
+        showweex(){
+            console.log(weex.config);
+        },
+        wxcCellClicked(e){
+            console.log(e);
         }
     }
   };

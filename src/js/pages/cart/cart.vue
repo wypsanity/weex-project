@@ -1,19 +1,6 @@
 <template>
     <div class="wrapper">
-        <div class="slogan">
-          <div class="head-box pub-layout">
-              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
-              <text class="i-slg">30天无忧退换货</text>
-          </div>
-          <div class="head-box pub-layout">
-              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
-              <text class="i-slg">48小时快速退款</text>
-          </div>
-          <div class="head-box pub-layout">
-              <image class="head-image" src="bmlocal://assets/images/red-icon.png"></image>
-              <text class="i-slg">满88元免邮费</text>
-          </div>
-        </div>
+        <three-tag></three-tag>
         <div v-if="cartGoods.length<=0" class="noshop-layout" :style="contentStyle" @click="gototest">
             <image class="noshop-image" resize="stretch" src="bmlocal://assets/images/goodcart.png"></image>
             <text style="text-align:center;color:#999">去添加点什么吧</text>
@@ -73,12 +60,13 @@ import Config from '../common/config'
 import app from '../app.js'
 import stepper from './stepper.vue'
 import apis from '../../config/url.apis';
+import ThreeTag from '../components/ThreeTag.vue'
 // Vue.filter('myFilter', function(value) {
 //     return he.decode(value);
 // })
 
 export default {
-    components: { WxcIcon,WxcButton,stepper },
+    components: {WxcIcon,WxcButton,stepper,ThreeTag},
     mounted() {
         this.getCartList();
     },

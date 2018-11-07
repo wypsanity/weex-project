@@ -1,7 +1,7 @@
 <template>
     <div>
         <status-bar :color="color"></status-bar>
-        <Wxc-minibar class="border-bottom" :title="title"
+        <Wxc-minibar :style="{'height': navBarHeight}" class="border-bottom" :title="title"
                 :background-color="backgroundColor"
                 :text-color="textColor"
                 @wxcMinibarLeftButtonClicked="minibarLeftButtonClick"></Wxc-minibar>
@@ -31,6 +31,7 @@ import StatusBar from './StatusBar.vue';
     },
    data () {
         return {
+            navBarHeight: weex.config.eros.navBarHeight ? weex.config.eros.navBarHeight : 120,
         }
     },
     components: {WxcMinibar,StatusBar},
