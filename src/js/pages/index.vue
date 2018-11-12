@@ -5,6 +5,7 @@
 </template>
 <script>
 	import main from './main.vue'
+	import app from './app'
 	export default {
 		components:{
 			main
@@ -32,6 +33,8 @@
 		},
 		created () {
 			this.androidFinishApp()
+			this.$storage.set('info',app)
+			.then(resData => {}, error => {})
 		},
 		methods: {
 			androidFinishApp () {

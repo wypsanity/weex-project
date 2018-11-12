@@ -24,6 +24,9 @@ export default {
     },
     'pages.home.goods' : {
         url: '/pages/home/goods/goods.js',
+    },
+    'pages.home.goodsDetail' : {
+        url: '/pages/home/goods/goodsDetail.js',
     }
     
 }

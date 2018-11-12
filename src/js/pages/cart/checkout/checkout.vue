@@ -8,7 +8,23 @@
         <div style="padding:10px;">
             <bui-richcell :content='content' @click="richClick"></bui-richcell>
         </div> -->
-        <web style="width: 730px; height: 500px" src=""></web>
+        <!-- <bmrichtext class="hd-txt flex">
+            {{img}}
+        </bmrichtext> -->
+        <!-- <div v-for="item in [1,2,3]">
+   <bmrichtext class="hd-txt flex">
+      <bmspan value="已提交" v-if="true"></bmspan>
+      <bmspan class="f-green" value="18"></bmspan>
+      <bmspan  value="天"></bmspan>
+      <bmspan class="f-green" value="3"></bmspan>
+      <bmspan  value="小时"></bmspan>
+      <bmspan class="f-green" value="1"></bmspan>
+      <div v-for="item in [1,2,3]">
+          <bmspan value="分"></bmspan>
+      </div>
+   </bmrichtext>
+</div> -->
+    <web style="wdith:750px;height:700px" src="https://www.qingqinkj.com/api/mall/mall/goods/goods/showGood?goodsId=1036002"></web>
     </div>
 </template>
 
@@ -21,7 +37,8 @@ import { buiRichcell,buiHeader } from 'bui-weex'
                 leftItem: {
                     icon: 'ion-chevron-left'
                 },
-                content:[]
+                content:[],
+                img:'<p><img src="http://yanxuan.nosdn.127.net/698e2a2252d9d4227f17f9d88a6e87ef.jpg"></p>',
             }
         },
         methods: {

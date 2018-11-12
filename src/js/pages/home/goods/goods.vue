@@ -54,8 +54,39 @@
              </div>
             </div>
         </div>
-        <text v-html="456789"></text>
+        <!-- <text v-html="456789"></text> -->
+        <div class="goods-attr" v-if="goodsAttributes.length>0">
+            <!-- <web style="wdith:750px;height:200px;" src="https://www.qingqinkj.com/arc/arc/archive/showArchive?id=1zhfzqg273"></web> -->
+            <wxc-cell title="商品参数"
+                :has-arrow="false"
+                @wxcCellClicked="wxcCellClicked"
+                :has-top-border="true"></wxc-cell>
+                <div class="goodsAttributes" v-for="item in goodsAttributes">
+                    <div class="goodsAttLayout">
+                        <div style="flex:1;"><text class="goodsAttText" style="color:#999;">{{item.name}}</text></div>
+                        <div style="flex:3;"><text style="color:#333;" class="goodsAttText">{{item.value}}</text></div>
+                    </div>
+                </div>
+        </div>
+        <div>
+             <wxc-cell title="商品详情"
+                :has-arrow="true"
+                @wxcCellClicked="showGoodsDetail"
+                :has-top-border="true"></wxc-cell>
+        </div>
+        <div class="issuesLayout">
+            <text style="text-align: center;width:750px;height:100px;line-height:100px;">--常见问题--</text>
+            <div class="issuesone" v-for="item in issues">
+                <div class="question-box"><text>{{item.question}}</text></div>
+                <div class="answer" style="color:#787878;"><text style="color:#787878;">{{item.answer}}</text></div>
+            </div>
+        </div>
+        <div class="issuesLayout">
+            <text style="text-align: center;width:750px;height:100px;line-height:100px;">--大家都在看--</text>
+            
+        </div>
     </scroller>
+    
     <div class="bar-bottom" :style="{'height': tabbarHeight}">
         <div style="flex:2;" class="box-o">
             <image class="icon" resize="stretch" :src="collectBackImage"></image>
@@ -67,7 +98,7 @@
             </div>
         </div>
         <div style="flex:3;background-color:#fc0000;" class="box-buy">
-            <text class="txt">立即购买</text>
+            <text class="txt">立即购买立即购买</text>
         </div>    
         <div style="flex:3;background-color:#089bf0;" class="box-cantBuy">
             <text class="txt">拼团购买</text>
@@ -216,6 +247,34 @@
         flex-direction:row;
         align-items:center;
     }
+    .goods-attr{
+        width:750px;
+        background-color:#fff;
+    }
+    .goodsAttLayout{
+        display: flex;;
+    flex-direction: row;
+    flex-wrap:nowrap;
+        background-color:#f7f7f7;
+        height:60px;
+        margin-top:20px;
+    }
+    .goodsAttributes{padding:0px 20px;margin-bottom:20px;}
+    .goodsAttText{
+        font-size:50px;
+    }
+    .issuesLayout{
+        background-color:#fff;
+    }
+    .issuesone{
+        margin-bottom:10px;
+    }
+    .question-box{
+        padding-left:20px;
+    }
+    .answer{
+        padding-left:40px;
+    }
 </style>
 <script>
   import {Utils} from 'weex-ui';
@@ -227,7 +286,6 @@
   export default {
     components: {TopBar,ThreeTag,WxcCell},
     data: () => ({
-      tabPageHeight: 1334,
       id:'',
       page: 1,
       size: 10,
@@ -238,10 +296,10 @@
       contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.tabbarHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight,
       comments: [],
       commentsTotal:0,
-      img:'v-html指令',
+      goodsAttributes: [],
+      issues: [],
     }),
     created () {
-      this.tabPageHeight = Utils.env.getPageHeight();
     },
     mounted(){    
     },
@@ -252,6 +310,9 @@
             that.goodsInfo = resData.item;
             this.getGoodsGallerys();
             this.getGoodsComments();
+            this.getGoodsAttributes();
+            this.getGoodsIssues();
+            this.getGoodsInfo();
         })
     },
     methods: {
@@ -298,11 +359,88 @@
                 }, error => {
                 })
         },
+        getGoodsAttributes: function () {
+            var that = this;
+            this.$fetch({
+                    method: 'GET',    
+                    url: api.GoodsAttributes + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    data: {
+                         goodsId: that.id 
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                        this.goodsAttributes=res.data;
+                    }
+                }, error => {
+                })
+        },
+        getGoodsIssues: function () {
+            var that = this;
+            this.$fetch({
+                    method: 'GET',    
+                    url: api.GoodsIssues + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    data: {
+                         goodsId: that.id 
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                        this.issues=res.data;
+                    }
+                }, error => {
+                })
+        },
+        getGoodsInfo: function () {
+            var that = this;
+            this.$fetch({
+                    method: 'GET',    
+                    url: api.GoodsInfo + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    data: {
+                         goodsId: that.id 
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                       //console.log(res);
+                       let goodsInfo = res.data
+                       that.getGoodsRelated(goodsInfo.categoryId, goodsInfo.id); 
+                    }
+                }, error => {
+                })
+        },
+        getGoodsRelated: function (categoryId, goodsId) {
+            let that = this;
+            let indexDataFloorGoods = app.indexData.categoryGoodss
+            console.log(app.globalData.authType);
+            // let categoryList = app.indexData.categoryTree.children
+            // categoryList.forEach(c => {
+            // let children = c.children;
+            // if (children != null && children.length > 0) {
+            //     if (children.some(ca => ca.id == categoryId)) {
+            //     if (indexDataFloorGoods != null && indexDataFloorGoods.length > 0) {
+            //         indexDataFloorGoods.forEach(category => {
+            //         if (c.id == category.id) {
+            //             that.setData({
+            //             relatedGoods: category.goodsList,
+            //             });
+            //         }
+            //         })
+            //     }
+            //     }
+            // }
+            // })   
+  },
         showweex(){
             console.log(weex.config);
         },
         wxcCellClicked(e){
             console.log(e);
+        },
+        showGoodsDetail(){
+          var that = this;
+          this.$router.open({
+            name: 'pages.home.goodsDetail',
+            navShow : false,
+            params:{id:that.id}
+        })
         }
     }
   };

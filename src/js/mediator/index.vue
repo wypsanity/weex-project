@@ -13,14 +13,19 @@
     export default {
         data () {
             return {
-
             }
         },
         methods: {
-            
         },
         created () {
-            
+            console.log('bbbbbbbbbbb')
+            let that = this
+                that.$event.on('getName55555', params => {
+                    this.$notice.toast({
+                        message:'我出发了'
+                    })
+                    console.log("this.count")
+                })
         }
     }
 </script>

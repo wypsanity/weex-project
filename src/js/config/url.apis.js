@@ -21,5 +21,8 @@ export default{
     GoodsList: MallApiRootUrl + 'goods/goods/getGoodsList',  //获得商品列表（√） 
     BrandDetail: MallApiRootUrl + 'pub/brand/list',  //品牌详情（√） 
     GoodsGallerys: MallApiRootUrl + 'goods/gallery/list/byGoodsId',  //获得商品的相册（√） 
-    GoodsComments: MallApiRootUrl + 'goods/comment/list/byGoodsId',  //获得商品的评论（√） 
+    GoodsComments: MallApiRootUrl + 'goods/comment/list/byGoodsId',  //获得商品的评论（√）
+    GoodsAttributes: MallApiRootUrl + 'goods/attribute/list/byGoodsId',  //获得商品的属性（√）  
+    GoodsInfo: MallApiRootUrl + 'goods/goods/one',  //获得商品的基本信息（√） 
+    GoodsIssues: MallApiRootUrl + 'goods/issue/list/byGoodsId',  //获得商品的常见问题（√）
 }

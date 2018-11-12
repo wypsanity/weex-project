@@ -40,7 +40,7 @@ import StatusBar from './StatusBar.vue';
           this.$router.back({
             type: 'PUSH',
             callback() {
-                this.$emit('callback','');
+                //this.$emit('callback','');
             }
           })
         }

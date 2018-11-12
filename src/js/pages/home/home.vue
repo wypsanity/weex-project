@@ -55,16 +55,18 @@
      "good-grid":GoodGrid
     },
     created() {
-        this.jsessionid = app.globalData.userInfo.jsessionid;
-        this.getBanners();
-        this.getChannels();
-        this.getBrands();
-        this.getNewGoodss();
-        this.getHotGoodss();
-        this.getCategoryGoodss();
-        this.getTopics();
-        this.getLocation();
-        this.getCategoryTree();
+        // this.jsessionid = app.globalData.userInfo.jsessionid;
+        // this.getBanners();
+        // this.getChannels();
+        // this.getBrands();
+        // this.getNewGoodss();
+        // this.getHotGoodss();
+        // this.getCategoryGoodss();
+        // this.getTopics();
+        // this.getLocation();
+        // this.getCategoryTree();
+        console.log('aaaaaaaaaaaaaaaaa')
+        this.$event.emit('getName55555');
     },
     methods: {
       wxcButtonClicked (e){
@@ -145,6 +147,8 @@
             })
       },
       getCategoryGoodss(){
+          console.log("456789");
+          //this.$event.emit('getName');
             var that = this;
             this.$get({ 
                 url: api.IndexCategoryGoodss + "?authId=" + app.getAuthId()
@@ -152,6 +156,11 @@
                 if (res.tips.isOk) {
                  this.categoryGoodss=res.data
                  app.indexData.categoryGoodss = res.data
+                 //app.globalData.authType="abc"
+                 //console.log(app.globalData.authType);
+                // console.log(this);
+                 //var aName = this.$event.emit('AeventName');
+                 //console.log(aName);
                 }
             }, error => {
             })
