@@ -8,7 +8,6 @@
 <style scoped>
 </style>
 <script>
-  import app from '../../app';
   import api from '../../../config/url.apis';
   import TopBar from '../../components/TopBar.vue'
   export default {

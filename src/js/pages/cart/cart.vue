@@ -57,7 +57,6 @@
 // import he from '../utils/he';
 import { WxcIcon,Utils,WxcButton} from 'weex-ui'
 import Config from '../common/config'
-import app from '../app.js'
 import stepper from './stepper.vue'
 import apis from '../../config/url.apis';
 import ThreeTag from '../components/ThreeTag.vue'
@@ -88,11 +87,12 @@ export default {
         }
     },
     created () {
+        this.app = this.$storage.getSync('app')
       const tabPageHeight = Utils.env.getPageHeight();
       const { tabStyles } = this;
       this.contentStyle = { height: (tabPageHeight - tabStyles.height)-66-150 + 'px' };
       this.scroStyle = { height: (tabPageHeight - tabStyles.height)-66 + 'px' };
-      this.jsessionid = app.globalData.userInfo.jsessionid;
+      this.jsessionid = this.app.globalData.userInfo.jsessionid;
     },
     computed:{
         btnStyle(){

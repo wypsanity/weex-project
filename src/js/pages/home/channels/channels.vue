@@ -65,13 +65,13 @@
 <script>
   import { WxcTabPage, Utils } from 'weex-ui';
   import Config from './config';
-  import app from '../../app';
   import api from '../../../config/url.apis';
   import GoodGrid from '../components/GoodGridTwo.vue'
   import TopBar from '../../components/TopBar.vue'
   export default {
     components: { WxcTabPage,GoodGrid,TopBar},
     data: () => ({
+      app:{},
       tabTitles: Config.tabTitles,
       tabStyles: Config.tabStyles,
       needSlider: true,
@@ -88,6 +88,7 @@
       tagindex:0,
     }),
     created () {
+      this.app = this.$storage.getSync('app')
       this.tabPageHeight = Utils.env.getPageHeight();
       this.$router.getParams().then(resData => {
             this.id=resData.id;
@@ -110,7 +111,7 @@
         this.tagindex=index;
         this.id=this.navList[index].id;
         this.tagindex=index;
-       app.navList.forEach(nav=>{
+       that.app.navList.forEach(nav=>{
             if(nav.children){
               var navIndex = 0;
             nav.children.forEach(i=>{
@@ -124,12 +125,11 @@
       },
       getCategoryInfo () {     
         let that = this; 
-        if (app.navList.length>0){
-          app.navList.forEach(nav=>{
+        if (that.app.navList.length>0){
+          that.app.navList.forEach(nav=>{
             if (nav.id == that.id) {
                 this.navList=nav.children;
                 this.nameToTitle(this.navList);
-                //this.eachList = [...this.navList];
                 this.tabStyles.activeBottomColor='#FFFFFF';
                 this.tabStyles.activeTitleColor='#666666';
                 this.currentCategory=nav;
@@ -139,12 +139,11 @@
                   navIndex = navIndex + 1
                 if (i.id == that.id){
                     this.navList=nav.children;
-                    //this.eachList = [...this.navList];
                     this.nameToTitle(this.navList);
                     this.currentCategory=i
                     this.tagindex = navIndex-1
                     this.$nextTick(()=>{
-                        this.$refs['wxc-tab-page'].setPage(navIndex-1);
+                        this.$refs['wxc-tab-page'].setPage(that.tagindex);
                     });
                 return;
                 }
@@ -157,16 +156,16 @@
                     method: 'GET',    
                     url: api.CatalogList,
                     data: {
-                        authId: app.getAuthId()
+                        authId: that.app.globalData.authId
                     }
                 }).then(res => {
                     if (res.tips.isOk) {
-                        app.navList = res.data.children;
-                          app.navList.forEach(nav => {
+                        that.app.navList = res.data.children;
+                        this.$storage.setSync('app', that.app)
+                          that.app.navList.forEach(nav => {
                           if (nav.id == that.id){
                               this.navList=nav.children;
                               this.nameToTitle(this.navList);
-                              //this.eachList = [...this.navList];
                               this.currentCategory=nav;
                               this.tabStyles.activeBottomColor='#FFFFFF';
                               this.tabStyles.activeTitleColor='#666666';
@@ -175,15 +174,12 @@
                           nav.children.some(i => {
                               navIndex = navIndex + 1
                               if (i.id == that.id) {
-                                console.log(i.id);
-                                console.log(navIndex);
                                   this.navList=nav.children;
-                                  //this.eachList = [...this.navList];
                                   this.nameToTitle(this.navList);
                                   this.currentCategory=i;
                                   this.tagindex = navIndex-1
                                   this.$nextTick(()=>{
-                                      this.$refs['wxc-tab-page'].setPage(navIndex-1);
+                                      this.$refs['wxc-tab-page'].setPage(that.tagindex);
                                   });
                                   return true;
                               }
@@ -205,7 +201,7 @@
             var that = this;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsList+"?authId="+app.getAuthId(),
+                    url: api.GoodsList+"?authId="+that.app.globalData.authId,
                     data: {
                         categoryId: that.id, 
                         pageNum: that.page, 

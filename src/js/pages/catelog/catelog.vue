@@ -32,13 +32,13 @@ const animation = weex.requireModule('animation')
 var modal = weex.requireModule('bmModal')
 import {Utils} from 'weex-ui';
 import api from '../../config/url.apis';
-import app from '../app';
 
 export default {
     components: {
         'class-header': header
     },
     created() {
+        this.app = this.$storage.getSync('app')
         const tabPageHeight = Utils.env.getPageHeight();
         const { tabStyles } = this;
         this.contentStyle = { height: (tabPageHeight - tabStyles.height - 70) + 'px' };
@@ -54,6 +54,7 @@ export default {
     },
     data() {
         return {
+            app:{},
             actIndex: 0,
             scrollHeight: 0,
             tabTitles: Config.tabTitles,
@@ -96,23 +97,23 @@ export default {
         },
         getCatalog (){
             var that = this;
-            if(!!app.indexData.categoryTree.children){
-                if (app.indexData.categoryTree.children.length>0){
-                    this.navList=app.indexData.categoryTree.children,
-                    this.currentCategory=app.indexData.categoryTree.children[0]
+            if(!!that.app.indexData.categoryTree.children){
+                if (that.app.indexData.categoryTree.children.length>0){
+                    this.navList=that.app.indexData.categoryTree.children,
+                    this.currentCategory=that.app.indexData.categoryTree.children[0]
                 }
             }else{
                 this.$fetch({
                     method: 'GET',    
                     url: api.CatalogList,
                     data: {
-                        locationId: '',authId: app.getAuthId()
+                        locationId: '',authId: that.app.globalData.authId
                     }
                 }).then(res => {
                     if (res.tips.isOk) {
                         this.navList = res.data.children;
                         this.currentCategory = res.data.children[0];
-                        app.navList = res.data.children;
+                        that.app.navList = res.data.children;
                     }
                 }, error => {
                     this.$notice.alert({

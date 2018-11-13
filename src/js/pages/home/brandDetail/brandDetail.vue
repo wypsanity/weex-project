@@ -44,13 +44,13 @@
 </style>
 <script>
   import {Utils} from 'weex-ui';
-  import app from '../../app';
   import api from '../../../config/url.apis';
   import TopBar from '../../components/TopBar.vue'
   import GoodGrid from '../components/GoodGridTwo.vue'
   export default {
     components: {TopBar,GoodGrid},
     data: () => ({
+      app:{},
       id:'',
       page: 1,
       size: 10,
@@ -58,6 +58,7 @@
       goodsList:[]
     }),
     created () {
+      this.app = this.$storage.getSync('app')
       this.tabPageHeight = Utils.env.getPageHeight();
       this.$router.getParams().then(resData => {
             this.id=resData.id;
@@ -73,7 +74,7 @@
       getBrand: function () {
             var that = this;
             this.$get({
-                    url: api.BrandDetail+"?authId="+app.getAuthId(),
+                    url: api.BrandDetail+"?authId="+that.app.globalData.authId,
                     data: {
                       id:that.id
                     }
@@ -90,7 +91,7 @@
             var that = this;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsList+"?authId="+app.getAuthId(),
+                    url: api.GoodsList+"?authId="+that.app.globalData.authId,
                     data: {
                         brandId: that.id, 
                         pageNum: that.page, 
@@ -115,7 +116,7 @@
             that.page=that.page+1;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsList+"?authId="+app.getAuthId(),
+                    url: api.GoodsList+"?authId="+that.app.globalData.authId,
                     data: {
                         brandId: that.id, 
                         pageNum: that.page, 
