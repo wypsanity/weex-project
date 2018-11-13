@@ -33,8 +33,7 @@
 		},
 		created () {
 			this.androidFinishApp()
-			this.$storage.set('info',app)
-			.then(resData => {}, error => {})
+			this.$storage.setSync('app', app)
 		},
 		methods: {
 			androidFinishApp () {

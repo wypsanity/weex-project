@@ -51,6 +51,6 @@ export default {
         return this.globalData.userInfo;
       },
       getAuthId : function(){
-        return this.globalData.authId;
+        //return this.globalData.authId;
       },
 }

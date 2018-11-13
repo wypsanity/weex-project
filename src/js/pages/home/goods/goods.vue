@@ -2,6 +2,7 @@
   <div>
   <top-bar></top-bar>
         <scroller class="item-container" :style="{ height: contentHeight + 'px' }">
+        <div v-if="!openAttr">
         <div>
             <slider class="slider" auto-play="true" interval="5000" infinite="false" >
                 <div class="frame" @click="previewImg">
@@ -25,7 +26,7 @@
         <div>
              <wxc-cell title="请选择规格数量"
                 :has-arrow="true"
-                @wxcCellClicked="wxcCellClicked"
+                @wxcCellClicked="switchAttrPop"
                 :has-top-border="true"></wxc-cell>
         </div>
         <div style="height:20px;"></div>
@@ -54,9 +55,7 @@
              </div>
             </div>
         </div>
-        <!-- <text v-html="456789"></text> -->
         <div class="goods-attr" v-if="goodsAttributes.length>0">
-            <!-- <web style="wdith:750px;height:200px;" src="https://www.qingqinkj.com/arc/arc/archive/showArchive?id=1zhfzqg273"></web> -->
             <wxc-cell title="商品参数"
                 :has-arrow="false"
                 @wxcCellClicked="wxcCellClicked"
@@ -81,9 +80,37 @@
                 <div class="answer" style="color:#787878;"><text style="color:#787878;">{{item.answer}}</text></div>
             </div>
         </div>
-        <div class="issuesLayout">
-            <text style="text-align: center;width:750px;height:100px;line-height:100px;">--大家都在看--</text>
-            
+        <div>
+            <text class="issuesLayout" style="text-align: center;width:750px;height:100px;line-height:100px;">--大家都在看--</text>
+            <good-grid v-if="relatedGoods.length>0" :categoryGood="relatedGoods"></good-grid>
+        </div>
+        </div>
+        <div :style="{ height: contentHeight + 'px','background-color':'#fff'}" v-else>
+            <div style="padding-left:40px;padding-top:20px;" class="attr-one">
+                <image style="width:200px;height:200px;" resize="stretch" src="https://www.qingqinkj.com/arc/arc/image/mktv4i2u1/bgj991b88/2018/814/9/1exhmc3c97.jpg"></image>
+                <div style="padding-left:20px" class="attr-one-right" >
+                    <div class="attr-right-com"><text>价格:</text><text style="padding-left:20px">6</text></div>
+                    <div class="attr-right-com"><text>已选择:</text><text style="padding-left:20px">纯白色</text></div>
+                    <div class="attr-right-com"><text>库存:</text><text style="padding-left:20px">27</text></div>
+                </div>
+            </div>
+            <div style="margin-left:40px;margin-top:40px;" v-for="item in specifications">
+                <text>{{item.name}}</text>
+                <div style="display:flex;flex-direction: row;flex-wrap:wrap;">
+                <div :class="[checked ? 'isselected' : '','selected-box']" v-for="vitem in item.valueList">
+                    <text style="text-overflow: ellipsis;">{{vitem.value}}</text>
+                </div>
+                </div>
+            </div>
+            <!-- <div style="padding-left:40px;padding-top:40px;">
+                <text>颜色</text>
+            </div> -->
+            <div style="padding-left:40px;padding-top:40px;">
+                <text>数量</text>
+                <stepper style="margin-top:20px;margin-left:25px;" :value="item"  min="1"
+                             @wxcStepperValueCutNumber="cutNumber" @wxcStepperValueChanged="numbersChange" @wxcStepperValueAddNumber="addNumber"></stepper>
+            </div>
+
         </div>
     </scroller>
     
@@ -97,13 +124,13 @@
             <text class="cart-count">0</text>
             </div>
         </div>
-        <div style="flex:3;background-color:#fc0000;" class="box-buy">
-            <text class="txt">立即购买立即购买</text>
+        <div style="flex:3;background-color:#fc0000;" class="box-buy" @click="buyItNow">
+            <text class="txt">立即购买</text>
         </div>    
-        <div style="flex:3;background-color:#089bf0;" class="box-cantBuy">
-            <text class="txt">拼团购买</text>
+        <div style="flex:3;background-color:#089bf0;" class="box-cantBuy" @click="pingTuanFun">
+            <text class="txt" style="text-decoration:line-through;">拼团购买</text>
         </div>
-        <div style="flex:3;background-color:#4c7903;" class="box-shop" @click="showweex">
+        <div style="flex:3;background-color:#4c7903;" class="box-shop" @click="addToCart">
             <text class="txt">加入购物车</text>
         </div> 
     </div>
@@ -275,17 +302,53 @@
     .answer{
         padding-left:40px;
     }
+    .attr-one{
+        display:flex;
+        flex-direction:row;
+    }
+    .attr-one-right{
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+
+        height:200px;
+    }
+    .attr-right-com{
+        display:flex;
+        flex-direction:row;
+        flex-wrap:nowrap;
+        height:50px;
+    }
+    .selected-box{
+        width:150px;
+        height:80px;
+        
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        border-width:1px;
+        border-style:solid;
+        border-color:#333;
+        margin-top:30px;
+        margin-left:20px;
+    }
+    .isselected{
+        background-color:red;
+
+    }
 </style>
 <script>
   import {Utils} from 'weex-ui';
-  import app from '../../app';
   import api from '../../../config/url.apis';
   import TopBar from '../../components/TopBar.vue'
   import ThreeTag from '../../components/ThreeTag.vue'
   import { WxcCell } from 'weex-ui';
+  import GoodGrid from '../components/GoodGridTwo.vue'
+  import stepper from '../../cart/stepper.vue'
   export default {
-    components: {TopBar,ThreeTag,WxcCell},
+    components: {TopBar,ThreeTag,WxcCell,GoodGrid,stepper},
     data: () => ({
+      app:{},
       id:'',
       page: 1,
       size: 10,
@@ -298,12 +361,14 @@
       commentsTotal:0,
       goodsAttributes: [],
       issues: [],
+      relatedGoods:[],
+      openAttr:false,
+      checked:false,
+      specifications:[],
+      item:{numbers:0}
     }),
     created () {
-    },
-    mounted(){    
-    },
-    beforeCreate() {
+        this.app = this.$storage.getSync('app')
         var that = this;
       this.$router.getParams().then(resData => {
             that.id= resData.item.id;
@@ -313,7 +378,12 @@
             this.getGoodsAttributes();
             this.getGoodsIssues();
             this.getGoodsInfo();
+            this.getGoodsSpecifications();
         })
+    },
+    mounted(){    
+    },
+    beforeCreate() {
     },
     methods: {
         previewImg(e){
@@ -332,7 +402,7 @@
             var that = this;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsGallerys + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    url: api.GoodsGallerys + '?jsessionid=' + that.app.globalData.userInfo.jsessionid +"&authId="+that.app.globalData.authId,
                     data: {
                          goodsId: that.id 
                     }
@@ -347,7 +417,7 @@
             var that = this;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsComments + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    url: api.GoodsComments + '?jsessionid=' + that.app.globalData.userInfo.jsessionid +"&authId="+that.app.globalData.authId,
                     data: {
                          goodsId: that.id 
                     }
@@ -363,7 +433,7 @@
             var that = this;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsAttributes + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    url: api.GoodsAttributes + '?jsessionid=' + that.app.globalData.userInfo.jsessionid +"&authId="+that.app.globalData.authId,
                     data: {
                          goodsId: that.id 
                     }
@@ -378,7 +448,7 @@
             var that = this;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsIssues + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    url: api.GoodsIssues + '?jsessionid=' + that.app.globalData.userInfo.jsessionid +"&authId="+that.app.globalData.authId,
                     data: {
                          goodsId: that.id 
                     }
@@ -393,7 +463,7 @@
             var that = this;
             this.$fetch({
                     method: 'GET',    
-                    url: api.GoodsInfo + '?jsessionid=' + app.getUserInfo().jsessionid +"&authId="+app.getAuthId(),
+                    url: api.GoodsInfo + '?jsessionid=' + that.app.globalData.userInfo.jsessionid +"&authId="+that.app.globalData.authId,
                     data: {
                          goodsId: that.id 
                     }
@@ -406,30 +476,105 @@
                 }, error => {
                 })
         },
+        getGoodsSpecifications: function () {
+            var that = this;
+            this.$fetch({
+                    method: 'GET',    
+                    url: api.GoodsSpecifications + '?jsessionid=' + that.app.globalData.userInfo.jsessionid +"&authId="+that.app.globalData.authId,
+                    data: {
+                         goodsId: that.id 
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                       var sl = res.data.specifications;
+                        var pl = res.data.productStocks;
+                        var priceList = [];
+                        if (pl.length <= 0) {
+                        for (var i = 0; i < sl.length; i++) {
+                            var slValues = sl[i].valueList;
+                            for (var j = 0; j < slValues.length; j++) {
+                            slValues[j].canBuy = false;
+                            priceList.push(slValues[j].retailPrice);
+                            }
+                        }
+                        } else {
+                        for (var i = 0; i < sl.length; i++) {
+                            var slValues = sl[i].valueList;
+                            for (var j = 0; j < slValues.length; j++) {
+                            slValues[j].canBuy = false;
+                            slValues[j].goodsNumber = 0;
+                            slValues[j].retailPrice = that.goodsInfo.retailPrice;
+                            for (var k = 0; k < pl.length; k++) {
+                                if (pl[k].goodsSpecificationIds.indexOf("_") != -1) {
+                                if ((pl[k].goodsSpecificationIds + "_").indexOf(slValues[j].id + "_") != -1) {
+                                    slValues[j].canBuy = true;
+                                    slValues[j].goodsNumber = pl[k].goodsNumber;
+                                    slValues[j].retailPrice = pl[k].retailPrice;
+                                    priceList.push(slValues[j].retailPrice);
+                                    break;
+                                }
+                                } else if (pl[k].goodsSpecificationIds == slValues[j].id) {
+                                slValues[j].canBuy = true;
+                                slValues[j].goodsNumber = pl[k].goodsNumber;
+                                slValues[j].retailPrice = pl[k].retailPrice;
+                                priceList.push(slValues[j].retailPrice);
+                                break;
+                                }
+                            }
+
+                            }
+                        }
+                        }
+                        that.specifications=sl;
+                        that.productStocks=res.data.productStocks;
+                    }
+                }, error => {
+                })
+        },
         getGoodsRelated: function (categoryId, goodsId) {
             let that = this;
-            let indexDataFloorGoods = app.indexData.categoryGoodss
-            console.log(app.globalData.authType);
-            // let categoryList = app.indexData.categoryTree.children
-            // categoryList.forEach(c => {
-            // let children = c.children;
-            // if (children != null && children.length > 0) {
-            //     if (children.some(ca => ca.id == categoryId)) {
-            //     if (indexDataFloorGoods != null && indexDataFloorGoods.length > 0) {
-            //         indexDataFloorGoods.forEach(category => {
-            //         if (c.id == category.id) {
-            //             that.setData({
-            //             relatedGoods: category.goodsList,
-            //             });
-            //         }
-            //         })
-            //     }
-            //     }
-            // }
-            // })   
-  },
-        showweex(){
-            console.log(weex.config);
+            let indexDataFloorGoods = that.app.indexData.categoryGoodss
+            let categoryList = that.app.indexData.categoryTree.children
+            categoryList.forEach(c => {
+            let children = c.children;
+            if (children != null && children.length > 0) {
+                if (children.some(ca => ca.id == categoryId)) {
+                if (indexDataFloorGoods != null && indexDataFloorGoods.length > 0) {
+                    indexDataFloorGoods.forEach(category => {
+                    if (c.id == category.id) {
+                        that.relatedGoods=category.goodsList;
+                    }
+                    })
+                }
+                }
+            }
+            })   
+        },
+        switchAttrPop: function () {
+            if (this.openAttr == false) {
+                this.openAttr=!this.openAttr;
+            }
+        },
+        addToCart(){
+            if (this.openAttr == false) {
+                this.openAttr=!this.openAttr;
+            }
+        },
+        buyItNow: function () {
+            var that = this;
+            if (this.openAttr == false) {
+                that.openAttr= !this.openAttr
+            }else{
+
+            }
+        },
+        pingTuanFun: function () {
+            var that = this;
+            if (this.openAttr == false) {
+                that.openAttr= !this.openAttr
+            }else{
+                
+            }
         },
         wxcCellClicked(e){
             console.log(e);

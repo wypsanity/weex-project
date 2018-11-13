@@ -25,4 +25,6 @@ export default{
     GoodsAttributes: MallApiRootUrl + 'goods/attribute/list/byGoodsId',  //获得商品的属性（√）  
     GoodsInfo: MallApiRootUrl + 'goods/goods/one',  //获得商品的基本信息（√） 
     GoodsIssues: MallApiRootUrl + 'goods/issue/list/byGoodsId',  //获得商品的常见问题（√）
+    IndexTopics: MallApiRootUrl + 'pub/topic/list', //首页专题接口（√）
+    GoodsSpecifications: MallApiRootUrl + 'goods/specification/list/byGoodsId',  //获得商品的规格（√）
 }

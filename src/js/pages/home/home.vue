@@ -27,10 +27,10 @@
   import ShopSelection from './components/ShopSelection.vue';
   import GoodGrid from './components/GoodGrid.vue';
   import api from '../../config/url.apis';
-  import app from '../app';
   export default {
   data () {
         return {
+          app:{},
           newGoodss: [],
           hotGoodss: [],
           topics: [],
@@ -55,18 +55,21 @@
      "good-grid":GoodGrid
     },
     created() {
-        // this.jsessionid = app.globalData.userInfo.jsessionid;
-        // this.getBanners();
-        // this.getChannels();
-        // this.getBrands();
-        // this.getNewGoodss();
-        // this.getHotGoodss();
-        // this.getCategoryGoodss();
-        // this.getTopics();
-        // this.getLocation();
-        // this.getCategoryTree();
-        console.log('aaaaaaaaaaaaaaaaa')
-        this.$event.emit('getName55555');
+        this.app = this.$storage.getSync('app')
+        this.jsessionid = this.app.globalData.userInfo.jsessionid;
+        this.getBanners();
+        this.getChannels();
+        this.getBrands();
+        this.getNewGoodss();
+        this.getHotGoodss();
+        this.getCategoryGoodss();
+        this.getTopics();
+        this.getLocation();
+        this.getCategoryTree();
+
+       
+    },
+    mounted(){
     },
     methods: {
       wxcButtonClicked (e){
@@ -85,7 +88,7 @@
       getBanners(){
             var that = this;
             this.$get({ 
-                url: api.IndexBanners + "?authId=" + app.getAuthId()
+                url: api.IndexBanners + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                  this.banners=res.data;
@@ -96,7 +99,7 @@
       getChannels(){
             var that = this;
             this.$get({ 
-                url: api.IndexChannels + "?authId=" + app.getAuthId()
+                url: api.IndexChannels + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                  this.channels=that.dealUrl(res.data)
@@ -116,7 +119,7 @@
       getBrands(){
             var that = this;
             this.$get({ 
-                url: api.IndexBrands + "?authId=" + app.getAuthId()
+                url: api.IndexBrands + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                  this.brands=res.data
@@ -127,7 +130,7 @@
       getNewGoodss(){
             var that = this;
             this.$get({ 
-                url: api.IndexNewGoodss + "?authId=" + app.getAuthId()
+                url: api.IndexNewGoodss + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                  this.newGoodss=res.data
@@ -138,7 +141,7 @@
       getHotGoodss(){
             var that = this;
             this.$get({ 
-                url: api.IndexHotGoodss + "?authId=" + app.getAuthId()
+                url: api.IndexHotGoodss + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                  this.hotGoodss=res.data
@@ -147,15 +150,14 @@
             })
       },
       getCategoryGoodss(){
-          console.log("456789");
-          //this.$event.emit('getName');
             var that = this;
             this.$get({ 
-                url: api.IndexCategoryGoodss + "?authId=" + app.getAuthId()
+                url: api.IndexCategoryGoodss + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                  this.categoryGoodss=res.data
-                 app.indexData.categoryGoodss = res.data
+                 that.app.indexData.categoryGoodss = res.data
+                 this.$storage.setSync('app', that.app)
                  //app.globalData.authType="abc"
                  //console.log(app.globalData.authType);
                 // console.log(this);
@@ -168,7 +170,7 @@
       getTopics(){
             var that = this;
             this.$get({ 
-                url: api.IndexTopics + "?authId=" + app.getAuthId()
+                url: api.IndexTopics + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                  this.topics=res.data;
@@ -182,7 +184,7 @@
           let params = {
           pageNum: that.page,
           pageSize: 4,
-          authId: app.getAuthId()
+          authId: that.app.globalData.authId
         }
         if (that.shopId != '' && that.shopId != undefined) {
           params.shopId = that.shopId;
@@ -212,11 +214,12 @@
       getCategoryTree(){
             var that = this;
             this.$get({ 
-                url: api.CatalogList + "?authId=" + app.getAuthId()
+                url: api.CatalogList + "?authId=" + that.app.globalData.authId
             }).then(res =>{
                 if (res.tips.isOk) {
                   this.categoryTree=res.data;
-                  app.indexData.categoryTree=res.data;
+                  that.app.indexData.categoryTree = res.data
+                 this.$storage.setSync('app', that.app)
                   this.$event.emit('getCatalog')
                 }
             }, error => {

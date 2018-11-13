@@ -10,22 +10,24 @@
     // 住： 不能再app退出的时候来持久化存储，退出时间很短，无法保证存储成功
 
     // 我们不建议在这里存储大量的数据 这里仅仅希望用作一个中介者 来提供给其他页面实例来通信 他无法替代storage 读取速度也远远慢与storage
+    import app from '../pages/app';
     export default {
         data () {
             return {
+                app:{}
             }
         },
         methods: {
+            getAppListener(){
+                this.$event.on('getAppListener', params => {
+                    this.$event.emit(params,this.app);
+                })
+            }
         },
         created () {
-            console.log('bbbbbbbbbbb')
-            let that = this
-                that.$event.on('getName55555', params => {
-                    this.$notice.toast({
-                        message:'我出发了'
-                    })
-                    console.log("this.count")
-                })
+            this.app = app
+            this.getAppListener()   
+  
         }
     }
 </script>

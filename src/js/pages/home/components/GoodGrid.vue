@@ -58,7 +58,8 @@
             params:{id:id}
         })
       },
-    }
+    },
+    
   }
 </script>
 <style scoped>

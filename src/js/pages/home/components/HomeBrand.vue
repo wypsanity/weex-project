@@ -32,6 +32,8 @@
             params:{id:id}
         })
       },
+    },
+    created() {
     }
   }
 </script>
