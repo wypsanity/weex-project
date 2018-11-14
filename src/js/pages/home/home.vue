@@ -66,8 +66,6 @@
         this.getTopics();
         this.getLocation();
         this.getCategoryTree();
-
-       
     },
     mounted(){
     },

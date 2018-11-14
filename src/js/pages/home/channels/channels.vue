@@ -75,7 +75,6 @@
       tabTitles: Config.tabTitles,
       tabStyles: Config.tabStyles,
       needSlider: true,
-      supportSlide: true,
       isTabView: true,
       tabPageHeight: 1334,
       id:'',

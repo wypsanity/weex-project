@@ -351,10 +351,10 @@ export default {
             }
         },
         gototest(){
-            this.$router.open({
-                            name: 'pages.cart.checkout',
-                            navShow : false,
-                        })
+            // this.$router.open({
+            //                 name: 'pages.cart.checkout',
+            //                 navShow : false,
+            //             })
         }
 
     }

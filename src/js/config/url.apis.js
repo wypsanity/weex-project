@@ -27,4 +27,6 @@ export default{
     GoodsIssues: MallApiRootUrl + 'goods/issue/list/byGoodsId',  //获得商品的常见问题（√）
     IndexTopics: MallApiRootUrl + 'pub/topic/list', //首页专题接口（√）
     GoodsSpecifications: MallApiRootUrl + 'goods/specification/list/byGoodsId',  //获得商品的规格（√）
+    CartGoodsCount: MallApiRootUrl + 'user/userCart/goodsCount', // 获取购物车商品件数(√)
+    CartAdd: MallApiRootUrl + 'user/userCart/add', // 添加商品到购物车(√)
 }

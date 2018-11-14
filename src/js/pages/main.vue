@@ -1,5 +1,6 @@
 <template>       
-  <wxc-tab-bar :tab-titles="tabTitles"
+  <wxc-tab-bar ref="wxc-tab-bar"
+               :tab-titles="tabTitles"
                :tab-styles="tabStyles"
                title-type="icon"
                @wxcTabBarCurrentTabSelected="wxcTabBarCurrentTabSelected">
@@ -77,8 +78,6 @@
 .scroller{
     width: 750px;
 }
-
-
 .slogan {
     width: 750px;
     display: flex;
@@ -134,11 +133,18 @@ align-items: center;
     methods: {
       wxcTabBarCurrentTabSelected (e) {
         const index = e.page;
-        // console.log(index);
+        console.log(index);
       },
       jump (url) {
         
       }
+    },
+    eros: {
+        beforeBackAppear(params) {
+            if(params.name=='goShop'){
+                this.$refs['wxc-tab-bar'].setPage(2)
+            }
+        }
     }
   };
 </script>

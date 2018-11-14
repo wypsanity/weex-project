@@ -27,6 +27,13 @@ export default {
     },
     'pages.home.goodsDetail' : {
         url: '/pages/home/goods/goodsDetail.js',
+    },
+    'pages.home.checkout' : {
+        url: '/pages/home/goods/checkout.js',
+    },
+    'pages.home.good.comment' : {
+        url: '/pages/home/goods/comment.js',
     }
+    
     
 }
