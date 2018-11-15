@@ -50,7 +50,7 @@
                  <text class="three-info-hidden" style="margin-left:20px;">{{comments[0].remark}}</text>
                 </div>
              </div>
-             <div class="com-box-b" v-if="comments[0].picList&&comments[0].picList.length > 0">
+             <div class="com-box-b" v-if="!!comments[0].picList&&comments[0].picList.length > 0">
                  <image style="height:80px;width:80px;margin-left:10px;" v-for="i in comments[0].picList" resize="stretch" :src="i.picUrl"></image>
              </div>
             </div>
@@ -116,7 +116,7 @@
     </scroller>
     
     <div class="bar-bottom" :style="{'height': tabbarHeight}">
-        <div style="flex:2;" class="box-o">
+        <div style="flex:2;" class="box-o"  @click="closeAttrOrCollect">
             <image class="icon" resize="stretch" :src="collectBackImage"></image>
         </div>
         <div style="flex:2;" class="box-o" @click="goShopPage">
@@ -379,6 +379,8 @@
       size: 10,
       goodsInfo:{},
       collectBackImage: "bmlocal://assets/images/icon_collect.png",
+      noCollectImage: "bmlocal://assets/images/icon_collect.png",
+      hasCollectImage: "bmlocal://assets/images/icon_collect_e.png",
       gallerys:[],
       tabbarHeight: weex.config.eros.tabbarHeight ? weex.config.eros.tabbarHeight : 120,
       contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.tabbarHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight,
@@ -931,6 +933,7 @@
                 this.$router.open({
                     name: 'pages.home.checkout',
                     navShow : false,
+                    params:{}
                 })
             }
         },
@@ -1030,6 +1033,27 @@
                 navShow : false,
                 params:{valueId:that.goodsInfo.id,typeId:0}
             })
+        },
+        closeAttrOrCollect(){
+            var that = this;
+            this.$fetch({
+                    method: 'POST',    
+                    url: api.CollectAddOrDelete + '?jsessionid=' + that.app.globalData.userInfo.jsessionid + "&authId="+that.app.globalData.authId,
+                    data: {
+                        typeId: "0", 
+                        valueId: that.id, 
+                        locationId: that.goodsInfo.shopLocationId
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                        if (res.data.type == 'add') {
+                                this.collectBackImage= that.hasCollectImage
+                            } else {
+                                this.collectBackImage= that.noCollectImage
+                            }
+                    }
+                }, error => {
+                })
         }
     }
   };

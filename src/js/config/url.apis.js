@@ -29,4 +29,9 @@ export default{
     GoodsSpecifications: MallApiRootUrl + 'goods/specification/list/byGoodsId',  //获得商品的规格（√）
     CartGoodsCount: MallApiRootUrl + 'user/userCart/goodsCount', // 获取购物车商品件数(√)
     CartAdd: MallApiRootUrl + 'user/userCart/add', // 添加商品到购物车(√)
+    CommentCount: MallApiRootUrl + 'goods/comment/count',  //评论总数(√)
+    CommentList: MallApiRootUrl + 'goods/comment/getCommentList',  //评论列表(√)
+    CollectAddOrDelete: MallApiRootUrl + 'user/userCollect/addOrDelete',  //添加或取消收藏(√)
+    GetAddressAndPrice: MallApiRootUrl + 'user/userAddress/getAddressAndPrice',  //获取默认收货地址及运费
+    GetUserActiveCard: WxpubApiRootUrl + 'card/userReceive/getUserActiveCard',  //获取用户所拥有的卡券
 }

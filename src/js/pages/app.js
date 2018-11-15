@@ -12,8 +12,8 @@ export default {
             headimgurl:'',
             city:'' 
           }, 
-          userid:'',
-          jsessionid: "d96e7e1d-9ee2-48c1-a7ef-ae19bf446ef4",
+          userid:'123',
+          jsessionid: "52c92cba-2fb5-4b98-bea3-7063c56fdcfd",
           nickName: "",
           headimgurl: "",
           sex: "", //性别 0：未知、1：男、2：女
