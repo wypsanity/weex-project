@@ -1,28 +1,190 @@
 <template>
   <div>
     <top-bar></top-bar>
-    <text>付款页面</text>
+    <wxc-cell v-if="!!checkedAddress"  :has-top-border="false"
+                :auto-accessible="false"
+                :has-arrow="true"
+                :cell-style="cell"
+                @wxcCellClicked="selectAddress">
+                <text slot="label" class="cell-label-one" v-if="checkedAddress.isDefault =='1'">默认</text>
+                <text class="cell-content-one" slot="title">{{checkedAddress.province+checkedAddress.city+checkedAddress.district + checkedAddress.address}}</text>
+                </wxc-cell>
+    <wxc-cell v-else :has-top-border="false"
+    :auto-accessible="false"
+    :has-arrow="true"
+    :cell-style="cell"
+    @wxcCellClicked="addAddress">
+    <text slot="label" class="cell-label-two">还没有收货地址,去添加</text>
+    </wxc-cell>
+    <wxc-cell style="margin-top:20px;margin-bottom:20px;" label="请选择优惠卷"
+              :has-arrow="true"
+              :extraContent="canUseCardCount+'张优惠卷'"
+              @wxcCellClicked="chooseCards">
+              </wxc-cell>
+    <wxc-cell title="商品合计"
+    :has-arrow="false"
+    @wxcCellClicked="wxcCellClicked">
+    <text class="extra-content-right">￥{{goodsTotalPrice}}</text>
+    </wxc-cell>
+    <wxc-cell title="运费"
+    :has-arrow="false"
+    @wxcCellClicked="wxcCellClicked">
+    <text class="extra-content-right">￥{{freightPrice}}</text>
+    </wxc-cell>
+    <wxc-cell title="优惠卷"
+    :has-arrow="false"
+    @wxcCellClicked="wxcCellClicked">
+    <text class="extra-content-right">-￥{{normalPrice}}</text>
+    </wxc-cell>
+    <wxc-cell style="margin-bottom:20px;" title="会员卡"
+    :has-arrow="false"
+    @wxcCellClicked="wxcCellClicked">
+    <text class="extra-content-right">-￥{{merberPrice}}</text>
+    </wxc-cell>
+    <div class="cartGood-layout pub-layout" v-for="item in checkedGoodsList">
+          <div style="flex:40;" class="pub-layout">
+              <div style="flex:1;" class="cartGood-center pub-layout">
+                  <image class="cartGood-image" resize="stretch" :src="item.listPicUrl"></image>
+              </div>
+              <div style="flex:3;justify-content: center;padding-left:12px;" class="pub-layout-two">
+                  <text class="cartGood-center-font" style="height: 35px;overflow:hidden;">{{item.goodsName}}</text>
+                  <text class="cartGood-center-font" style="color:#666;font-size:25px;">{{item.goodsSpecifitionNameValue}}</text>
+                  <text class="cartGood-center-font">￥{{item.retailPrice}}</text>
+              </div>
+          </div>
+          <div style="flex:5;justify-content: center;" class="pub-layout-two">
+                        <text class="cartGood-center-font">x{{item.numbers}}</text>
+          </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div style="flex:3;flex-wrap:nowrap;display: flex;justify-content: center;">
+        <text style="color:#b4282d;">
+          实付￥{{actualPrice}}
+        </text>
+      </div>
+      <div style="flex:1;justify-content: center;align-items: center;background-color:#b4282d;">
+        <text style="color:#fff;">去付款</text>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
+  .cell-content-one {
+    color: #333333;
+    font-size: 30px;
+    line-height: 40px;
+  }
+  .cell-label-one {
+    margin-right: 20px;
+    font-size: 30px;
+    color: #C3413D;
+    border-radius:5px;
+    border-width:1px;
+    border-style:solid;
+    border-color:#C3413D;
+  }
+  .extra-content-right {
+    font-size: 28px;
+    margin-right: 4px;
+  }
+  .pub-layout{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.cartGood-center{
+    align-items: center;
+    justify-content: center;
+}
+.cartGood-center-font{
+    color:#333;
+    margin-bottom: 5px;
+}
+.pub-layout-two{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+.cartGood-image{
+    width: 120px;
+    height: 120px;
+    background-color:#f4f4f4;
+}
+.cartGood-layout{
+    width: 750px;
+    height: 140px;
+    background-color:#fff;
+    border-bottom-width:1px;
+    border-bottom-style:solid;
+    border-bottom-color:#d9d9d9;
+}
+.bottom-bar{
+  width: 750px;
+  height: 100px;
+  position: fixed;
+  bottom: 0px;
+  display: flex;
+  flex-direction: row;
+  background-color:#fff;
+}
+.cell-label-two{
+  color: #999999;
+  font-size: 30px;
+}
 </style>
 <script>
   import api from '../../../config/url.apis';
   import TopBar from '../../components/TopBar.vue'
   var util = require('../../util.js');
+  import { WxcCell } from 'weex-ui';
+  var status="0";
   export default {
-    components: {TopBar},
+    components: {TopBar,WxcCell},
     data: () => ({
       contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight,
       app:{},
-
+      checkedGoodsList: [],
+      checkedAddress: {},
+      goodsTotalPrice: 0.00, //商品总价
+      freightPrice: 0.00,    //快递费
+      actualPrice: 0.00,     //实际需要支付的总价:商品总价-折扣+运费
+      addressId: "",
+      checkedNormalCard: {},//被选中 的优惠券
+      checkedMemberCard: {},//被选中 的会员卡
+      merbertext:"",//会员卡的优惠描述
+      merberPrice:0,//会员卡共减少多少钱
+      normaltext: "",//优惠券的优惠描述
+      normalPrice: 0,//优惠券共减少多少钱
+      canUseCardCount:0,
+      remark:"",
+      isGbuy:"",
+      isGbuyNum:'0',
+      cell:{
+        height:150
+      }
     }),
     created () {
       this.app = this.$storage.getSync('app')
       let that = this;
+      // 页面显示
+        var address=that.app.globalData.addressInfo;
+        if (!util.isEmptyObject(address)){
+              this.checkedAddress= address;
+              this.addressId= address.id;
+        }
+        var info=that.app.globalData.orderCardInfo;
+        if (!util.isEmptyObject(info)){
+            this.actualPrice= info.actualPrice;     //实际需要支付的总价:商品总价-折扣+运费
+            this.checkedNormalCard= info.checkedNormalCard;//被选中 的优惠券
+            this.checkedMemberCard= info.checkedMemberCard;//被选中 的会员卡
+            this.merbertext= info.merbertext;//会员卡的优惠描述
+            this.merberPrice= info.merberPrice;//会员卡共减少多少钱
+            this.normaltext= info.normaltext;//优惠券的优惠描述
+            this.normalPrice= info.normalPrice;//优惠券共减少多少钱
+        }
       this.$router.getParams().then(resData => {
-          console.log(resData);
            if (!!resData.isGbuy){
              //团购
            }else{
@@ -30,13 +192,10 @@
               //获取商品信息。有则是立即购买。没有则是从购物车下单
               var buyItNow = that.app.globalData.buyItNowInfo;
               if (!util.isEmptyObject(buyItNow)) {
-                //status = "1";
-                //this.nowGbuyGoodsInfo(gbuyData);
-                console.log(buyItNow);
+                status = "1";
+                this.nowBuyGoodsInfo(buyItNow);
               } else {
-                console.log("为空");
-                console.log(buyItNow);
-                //status = "0";
+                status = "0";
                 //this.getCheckoutInfo();
               }
               //记得在data里面赋值
@@ -48,6 +207,34 @@
     beforeCreate() {
     },
     methods: {  
+      nowBuyGoodsInfo:function(buyItNow){
+          let that = this;
+          //获取商品信息。
+          var checkedGoodsList = buyItNow.checkedGoodsList;
+          var goodsTotalPrice = buyItNow.goodsTotalPrice;
+          var actualPrice = buyItNow.actualPrice;
+          this.checkedGoodsList= checkedGoodsList;
+          this.goodsTotalPrice=goodsTotalPrice;
+          this.actualPrice=goodsTotalPrice;
+          this.$fetch({
+                    method: 'GET',    
+                    url: api.GetAddressAndPrice + '?jsessionid=' + that.app.globalData.userInfo.jsessionid,
+                    data: {
+                         addressId: that.addressId
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                        that.checkedAddress= res.data.address;
+                        that.freightPrice= res.data.freightPrice;
+                        that.addressId= res.data.address == null ? '' : res.data.address.id;
+                        that.app.globalData.addressInfo = res.data.address;
+                        console.log(buyItNow);
+                        console.log(res);
+                    }
+                }, error => {
+                })
+                //that.getCard(userInfo);
+      },
       //开始团购商品
       nowGbuyGoodsInfo: function (gbuyData) {
           let that = this;
@@ -223,6 +410,59 @@
               }
                 this.actualPrice= parseInt((this.actualPrice + this.freightPrice) * 100) / 100
             },
+            getCheckoutInfo: function () {
+              let that = this;
+              this.$fetch({
+                    method: 'GET',    
+                    url: api.CartCheckout + '?jsessionid=' + that.app.globalData.userInfo.jsessionid,
+                    data: {
+                         addressId: that.addressId
+                    }
+                }).then(res => {
+                    if (res.tips.isOk) {
+                        this.checkedGoodsList= res.data.checkedGoodsList,
+                        this.checkedAddress= res.data.checkedAddress,
+                        this.freightPrice= res.data.freightPrice,
+                        this.goodsTotalPrice= res.data.goodsTotalPrice,
+                        this.addressId= res.data.checkedAddress== null ? '' : res.data.checkedAddress.id,
+                        this.actualPrice= res.data.goodsTotalPrice
+                    }
+                }, error => {
+                })
+                that.app.globalData.addressInfo = res.data.checkedAddress;
+                that.getCard(userInfo);
+            },
+            selectAddress(){
+                this.$router.open({
+                    name: 'pages.home.good.address',
+                    navShow : false,
+                    params:{}
+                })
+            },
+            addAddress(){
+
+            },
+            chooseCards:function(){
+              let that = this;
+      this.app.globalData.orderCardInfo = {
+      goodsTotalPrice: that.goodsTotalPrice,
+      freightPrice: that.freightPrice,
+      actualPrice: that.actualPrice,
+      checkedNormalCard: that.checkedNormalCard,
+      checkedMemberCard: that.checkedMemberCard,
+      merbertext: that.merbertext,
+      merberPrice: that.merberPrice,
+      normaltext: that.normaltext,
+      normalPrice: that.normalPrice,
+      checkedGoodsList: that.checkedGoodsList
+    }
+    this.$router.open({
+                    name: 'pages.home.good.useTicket',
+                    navShow : false,
+                    params:{}
+                })
+  },
+            
     }
   };
 </script>

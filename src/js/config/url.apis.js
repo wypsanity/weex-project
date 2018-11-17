@@ -34,4 +34,6 @@ export default{
     CollectAddOrDelete: MallApiRootUrl + 'user/userCollect/addOrDelete',  //添加或取消收藏(√)
     GetAddressAndPrice: MallApiRootUrl + 'user/userAddress/getAddressAndPrice',  //获取默认收货地址及运费
     GetUserActiveCard: WxpubApiRootUrl + 'card/userReceive/getUserActiveCard',  //获取用户所拥有的卡券
+    CartCheckout: MallApiRootUrl + 'user/userCart/checkedOut', // 下单前信息确认(√)
+    AddressList: MallApiRootUrl + 'user/userAddress/list',  //收货地址列表(√)
 }

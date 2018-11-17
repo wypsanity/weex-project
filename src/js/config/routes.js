@@ -33,7 +33,15 @@ export default {
     },
     'pages.home.good.comment' : {
         url: '/pages/home/goods/comment.js',
-    }
-    
+    },
+    'pages.home.good.address' : {
+        url: '/pages/home/goods/address.js',
+    },
+    'pages.home.good.useTicket' : {
+        url: '/pages/home/goods/useTicket.js',
+    },
+    'pages.home.good.addressAdd' : {
+        url: '/pages/home/goods/addressAdd.js',
+    },
     
 }

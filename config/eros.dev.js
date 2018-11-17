@@ -21,6 +21,9 @@ module.exports = {
         'js/pages/home/goods/goodsDetail.vue',
         'js/pages/home/goods/checkout.vue',
         'js/pages/home/goods/comment.vue',
+        'js/pages/home/goods/address.vue',
+        'js/pages/home/goods/useTicket.vue',
+        'js/pages/home/goods/addressAdd.vue',
     ],
     'alias': {
         'Components': 'js/components',
