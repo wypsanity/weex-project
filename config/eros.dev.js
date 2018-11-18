@@ -24,6 +24,7 @@ module.exports = {
         'js/pages/home/goods/address.vue',
         'js/pages/home/goods/useTicket.vue',
         'js/pages/home/goods/addressAdd.vue',
+        'js/pages/home/goods/aMap.vue',
     ],
     'alias': {
         'Components': 'js/components',

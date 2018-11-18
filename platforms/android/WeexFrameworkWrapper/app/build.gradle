@@ -106,5 +106,5 @@ dependencies {
 
     compile project(':nexus')
     compile project(':wxframework')
-
+    compile project(':erospluginamap')
 }

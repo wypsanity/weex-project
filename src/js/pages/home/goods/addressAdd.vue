@@ -2,33 +2,25 @@
   <div>
     <top-bar></top-bar>
     
-      <wxc-cell title="绿色"
+      <wxc-cell
             :has-top-border="true">
-            <input class="input" style="tint-color: #4cbd34;" type="text" placeholder="请输入..." value="" />
+            <input class="input" style="tint-color: #4cbd34;" type="text" placeholder="姓名" value="" />
         </wxc-cell>
-        <wxc-cell title="蓝色"
+        <wxc-cell
             :has-top-border="true">
-            <input class="input" style="tint-color: #1da1f2;" type="text" placeholder="请输入..." value="" />
+            <input class="input" style="tint-color: #1da1f2;" type="text" placeholder="电话" value="" />
         </wxc-cell>
-         <input class="input" style="tint-color: red;" type="text" placeholder="Input Text" value=""/>
+         <wxc-cell
+            :has-top-border="true">
+            <input ref="gomap" class="input" @focus="gomap" style="tint-color: #1da1f2;" type="text" placeholder="省份丶城市丶区县" value="" />
+        </wxc-cell>
   </div>
 </template>
 
 <style scoped>
-.item-container {
-    width: 750px;
-    background-color: #f2f3f4;
-  }
-.input-layout{
-    background-color: #fff;
-    border-bottom-color:#d9d9d9;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-}
 .input {
-    width: 500px;
+    width: 750px;
     height: 100px;
-    margin-left: 10px;
     color: #6a737d;
 }
 </style>
@@ -55,6 +47,15 @@
     methods: {  
       oninput(){
         
+      },
+      gomap(){
+        this.$refs['gomap'].blur();
+        //819200e856393bd6d252fd8932fffee2
+        this.$router.open({
+            name: 'pages.home.good.amap',
+            navShow : false,
+            params:{}
+        })
       }
     }
   };

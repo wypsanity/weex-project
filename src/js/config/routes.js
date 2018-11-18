@@ -43,5 +43,8 @@ export default {
     'pages.home.good.addressAdd' : {
         url: '/pages/home/goods/addressAdd.js',
     },
+    'pages.home.good.amap':{
+        url: '/pages/home/goods/aMap.js',
+    }
     
 }
