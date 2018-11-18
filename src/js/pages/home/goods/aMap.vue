@@ -34,6 +34,8 @@ import TopBar from '../../components/TopBar.vue'
      contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight,
     },
     created () {
+         var amap = weex.requireModule('amap')
+         amap.initAmap('819200e856393bd6d252fd8932fffee2')
         console.log("890")
         this.$geo.get().then(data => {
             this.$notice.toast({message:'789'})
