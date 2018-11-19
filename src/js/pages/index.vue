@@ -17,6 +17,8 @@
        		};
     	},
 		beforeCreate () {
+			var amap = weex.requireModule('amap')
+         	amap.initAmap('819200e856393bd6d252fd8932fffee2')
 			var domModule = weex.requireModule('dom');
 			// domModule.addRule('fontFace', {
 			// 	fontFamily: 'iconfont',

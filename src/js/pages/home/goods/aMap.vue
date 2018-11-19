@@ -6,7 +6,8 @@
         <weex-amap-marker :position="point.position" :title="point.title"></weex-amap-marker>
       </weex-amap>
   </div>
-  </div>
+  <div @click="setUserLocation" class="btnbox"><text>set location </text></div>
+</div>
 </template>
 
 <style>
@@ -19,9 +20,16 @@
     height: 600px;
     background-color: #000;
   }
+  .btnbox{
+    width: 750px;
+    height: 200px;
+
+  }
 </style>
 
 <script>
+var Amap = weex.requireModule('amap')
+Amap.initAmap('b14e524862cadf492b37c4b9441337d8')
 import TopBar from '../../components/TopBar.vue'
   module.exports = {
     components: {TopBar},
@@ -31,17 +39,42 @@ import TopBar from '../../components/TopBar.vue'
         position: [116.487, 40.00003],
         title: 'this is a marker',
       },
-     contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight,
+     contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight-200,
     },
+    beforeCreate () {
+		},
     created () {
-         var amap = weex.requireModule('amap')
-         amap.initAmap('819200e856393bd6d252fd8932fffee2')
-        console.log("890")
-        this.$geo.get().then(data => {
-            this.$notice.toast({message:'789'})
-        }, error => {
-            this.$notice.toast({message:'789'})
-        })
+        
     },
+    mounted(){ 
+      console.log('456');
+      var ref= this;
+      console.log(ref);
+    },
+    methods: {
+      setUserLocation() {
+        this.$geo.get().then(
+                data => {
+                    this.$notice.alert({
+                        message:
+                            '经度: ' +
+                            data.locationLng +
+                            '\r\n\r\n纬度: ' +
+                            data.locationLat,
+                        okTitle: '确认',
+                        callback () {
+                            // 点击确认按钮的回调
+                        }
+                    });
+                },
+                error => {
+                    this.$notice.toast({
+                        message: '获取位置失败'
+                    });
+                    console.log(error);
+                }
+            );
+    }
+  }
   }
 </script>
