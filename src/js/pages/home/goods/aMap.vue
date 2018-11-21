@@ -2,7 +2,7 @@
 <div>
   <top-bar></top-bar>
   <div class="container" :style="{ height: contentHeight + 'px' }">
-      <weex-amap :style="{ height: contentHeight + 'px' }" class="map" id="map2017" scale="true" geolocation="true" :center="pos" >
+      <weex-amap :style="{ height: contentHeight + 'px' }" class="map" ref="map2017" scale="true" geolocation="true" :center="pos" >
         <weex-amap-marker :position="point.position" :title="point.title"></weex-amap-marker>
       </weex-amap>
   </div>
@@ -55,17 +55,8 @@ import TopBar from '../../components/TopBar.vue'
       setUserLocation() {
         this.$geo.get().then(
                 data => {
-                    this.$notice.alert({
-                        message:
-                            '经度: ' +
-                            data.locationLng +
-                            '\r\n\r\n纬度: ' +
-                            data.locationLat,
-                        okTitle: '确认',
-                        callback () {
-                            // 点击确认按钮的回调
-                        }
-                    });
+                    console.log('123');
+                    console.log(data);
                 },
                 error => {
                     this.$notice.toast({
@@ -74,6 +65,14 @@ import TopBar from '../../components/TopBar.vue'
                     console.log(error);
                 }
             );
+        const self = this;
+        Amap.getUserLocation(self.$refs['map2017'],function (data) {
+          if(data.result == 'success') {
+            //self.pos = data.data.position;
+            console.log('321');
+            console.log(data);
+          }
+        });  
     }
   }
   }
