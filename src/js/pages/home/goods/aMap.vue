@@ -1,29 +1,71 @@
 <template>
 <div>
   <top-bar></top-bar>
-  <div class="container" :style="{ height: contentHeight + 'px' }">
-      <weex-amap :style="{ height: contentHeight + 'px' }" class="map" ref="map2017" scale="true" geolocation="true" :center="pos" >
-        <weex-amap-marker :position="point.position" :title="point.title"></weex-amap-marker>
-      </weex-amap>
+  <select-amap class="map" ref="map2017" :center="pos" scale="true" geolocation="true" @finish='finish'></select-amap>
+  <div class="bottom-layout">
+    <div :class="['commom-sty',changeBg==1 ? 'changeBgClass' : '']" @click="select(1)"><text>住宅区</text></div>
+    <div :class="['commom-sty',changeBg==2 ? 'changeBgClass' : '']" @click="select(2)"><text>学校</text></div>
+    <div :class="['commom-sty',changeBg==3 ? 'changeBgClass' : '']" @click="select(3)"><text>楼宇</text></div>
+    <div :class="['commom-sty',changeBg==4 ? 'changeBgClass' : '']" @click="select(4)"><text>商场</text></div>
   </div>
-  <div @click="setUserLocation" class="btnbox"><text>set location </text></div>
+  <div>
+  <scroller class="item-container" :style="{ height: contentHeight + 'px' }">
+    <div :class="['content-item',isSelectOne==index?'selectOneBg':'']" v-for="(item,index) in poiItems" @click="selectOne(item,index)">
+      <text class="title">{{item.title}}</text>
+      <text class="address-c">{{item.address}}</text>
+    </div>
+  </scroller>
+  </div>
 </div>
 </template>
 
 <style>
-  .container{
-    position: relative;
-    height: 500px;
+  .item-container{
+    width: 750px;
   }
   .map{
     width:750px;
     height: 600px;
     background-color: #000;
   }
-  .btnbox{
+  .bottom-layout{
     width: 750px;
-    height: 200px;
-
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  .commom-sty{
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-width: 1px;
+    border-color: gainsboro;
+  }
+  .changeBgClass{
+    background-color: goldenrod;
+  }
+  .content-item{
+      height: 100px;
+      width: 750px;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      padding-left: 20px;
+      justify-content: center;
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      border-bottom-color: gainsboro;
+  }
+  .title{
+    color:#808080;
+    font-size: 20px;
+  }
+  .address-c{
+    font-size: 30px;
+  }
+  .selectOneBg{
+    background-color:aliceblue;
   }
 </style>
 
@@ -35,45 +77,39 @@ import TopBar from '../../components/TopBar.vue'
     components: {TopBar},
     data: {
       pos:[116.487, 40.00003],
-      point: {
-        position: [116.487, 40.00003],
-        title: 'this is a marker',
-      },
-     contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight-200,
+      changeBg:1,
+      poiItems:{},
+      contentHeight:weex.config.eros.realDeviceHeight-weex.config.eros.navBarHeight-weex.config.eros.statusBarHeight-600-80,
+      isSelectOne:0,
+      addressData:''
     },
-    beforeCreate () {
-		},
-    created () {
-        
-    },
-    mounted(){ 
-      console.log('456');
-      var ref= this;
-      console.log(ref);
-    },
+
     methods: {
       setUserLocation() {
-        this.$geo.get().then(
-                data => {
-                    console.log('123');
-                    console.log(data);
-                },
-                error => {
-                    this.$notice.toast({
-                        message: '获取位置失败'
-                    });
-                    console.log(error);
-                }
-            );
         const self = this;
         Amap.getUserLocation(self.$refs['map2017'],function (data) {
           if(data.result == 'success') {
-            //self.pos = data.data.position;
-            console.log('321');
+            console.log("123");
             console.log(data);
           }
         });  
+        console.log("456");
+    },
+    finish(parm){
+       this.poiItems = parm.data;
+    },
+    select(i){
+        this.changeBg=i;
+        this.$refs['map2017'].setSelectOption(i);
+        this.isSelectOne =0;
+    },
+    selectOne(item,index){
+        this.isSelectOne =index;
+        this.addressData = item.address;
+        this.$notice.toast({
+            message:'你选择了'+item.title
+        })
+    },
     }
-  }
-  }
+  };
 </script>

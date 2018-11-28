@@ -132,8 +132,6 @@
         <meta-data
             android:name="PUSH_APPSECRET"
             android:value="${GETUI_APP_SECRET}"/>
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="	b14e524862cadf492b37c4b9441337d8">
-        </meta-data>
         <receiver
             android:name="com.eros.erosplugingt.GTPushReceiver"
             android:exported="false">
