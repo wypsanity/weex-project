@@ -4,7 +4,9 @@
         <Wxc-minibar :style="{'height': navBarHeight}" class="border-bottom" :title="title"
                 :background-color="backgroundColor"
                 :text-color="textColor"
-                @wxcMinibarLeftButtonClicked="minibarLeftButtonClick"></Wxc-minibar>
+                :right-text="rightText"
+                @wxcMinibarLeftButtonClicked="minibarLeftButtonClick"
+                @wxcMinibarRightButtonClicked="minibarRightButtonClick"></Wxc-minibar>
     </div>
 </template>
 <script>
@@ -27,6 +29,14 @@ import StatusBar from './StatusBar.vue';
       color:{
           type:String,
           default:'#ffffff'
+      },
+      rightText:{
+          type:String,
+          default:''
+      },
+      leftCall:{
+          type:Boolean,
+          default:false
       }
     },
    data () {
@@ -40,9 +50,16 @@ import StatusBar from './StatusBar.vue';
           this.$router.back({
             type: 'PUSH',
             callback() {
-                //this.$emit('callback','');
+                if(this.leftCall){
+                this.$emit('callback','');
+                }
             }
           })
+        },
+        minibarRightButtonClick(){
+            if(!!this.rightText){
+            this.$emit('callRight','');
+            }
         }
     }
   }

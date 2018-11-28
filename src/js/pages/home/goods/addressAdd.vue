@@ -56,7 +56,13 @@
             navShow : false,
             params:{}
         })
-      }
+      },
+    },
+    eros: {
+        beforeBackAppear(params) {
+          console.log('123123')
+            console.log(params)
+        }
     }
   };
 </script>

@@ -1,6 +1,6 @@
 <template>
 <div>
-  <top-bar></top-bar>
+  <top-bar right-text="确定" @callRight="commitAddress"></top-bar>
   <select-amap class="map" ref="map2017" :center="pos" scale="true" geolocation="true" @finish='finish'></select-amap>
   <div class="bottom-layout">
     <div :class="['commom-sty',changeBg==1 ? 'changeBgClass' : '']" @click="select(1)"><text>住宅区</text></div>
@@ -110,6 +110,23 @@ import TopBar from '../../components/TopBar.vue'
             message:'你选择了'+item.title
         })
     },
+    commitAddress(){
+      let that = this;
+      if(!!this.addressData){
+      this.$router.setBackParams({
+        name: that.addressData
+      })
+      this.$router.back({
+          type: 'PUSH',
+          callback() {
+          }
+      })
+      }else{
+        this.$notice.toast({
+            message:'请选择地址'
+        })
+      }
+    }
     }
   };
 </script>
