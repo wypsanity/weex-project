@@ -33,6 +33,8 @@ pids
 wxframework
 sdk
 bmwidget
+ErosPluginAmap
+nexus
 # files for the dex VM
 *.dex
 
